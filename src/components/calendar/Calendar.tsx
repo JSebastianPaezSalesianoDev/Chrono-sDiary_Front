@@ -30,17 +30,47 @@ const Calendar = () => {
             
                 </div>
 
-                <div className="event-popup">
-               
-                     <div className="time-input">
-                        <div className="event-popup-time">Time</div>
-                        <input type="number" name="hours" min={0} max={24} className="hours" placeholder="HH"/>
-                        <span>:</span>
-                        <input type="number" name="minutes" min={0} max={60} className="minutes" placeholder="MM"/>
+                <div className="event-modal"> 
+                    <button className="close-event-modal"> <i className='bx bx-x'></i></button>
+                    <h3 className="modal-title">Modal</h3>
+
+                    <div className="modal-section">
+                        <label htmlFor="event-title">Event title</label>
+                        <input type="text" id="event-title" name="event-title" placeholder="PlaceHolder" />
                     </div>
-                    <textarea name="event" id="event" cols={30} rows={5} placeholder="Enter Event Text"></textarea>
-                    <button className="event-popup-btn">Add Event</button>
-                    <button className="close-event-popup"> <i className='bx bx-x'></i></button>
+
+                    <div className="modal-section modal-field-with-icon">
+                        <i className='bx bx-time-five'></i> 
+                        <span>Sunday, May 7 | All day</span> 
+                    </div>
+
+                    <div className="modal-section">
+                         <label htmlFor="invite-people">Invite People</label>
+                        <div className="invite-input-group">
+                            <i className='bx bx-group'></i> 
+                            <input type="text" id="invite-people" name="invite-people" placeholder="USERNAME" />
+                            <button className="invite-button">INVITE</button>
+                        </div>
+                    </div>
+
+                    <div className="modal-section modal-field-with-icon">
+                         <i className='bx bx-map'></i>
+                         <input type="text" id="event-location" name="event-location" placeholder="Santa Cruz De Tenerife" />
+                    </div>
+
+                    <div className="modal-section">
+                        <label htmlFor="event-description">Description</label>
+                        <textarea id="event-description" name="event-description" rows={4}></textarea>
+                    </div>
+
+                    <div className="modal-section owner-section">
+                         <label>Owner</label>
+                         <span className="owner-name">Juan Sebastian Paez Delgado</span>
+                    </div>
+
+                     <div className="modal-actions">
+                         <button className="submit-button">ENVIAR</button>
+                    </div>
                 </div>
             </div>
 
