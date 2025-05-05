@@ -32,11 +32,11 @@ const Calendar = () => {
 
                 <div className="event-modal"> 
                     <button className="close-event-modal"> <i className='bx bx-x'></i></button>
-                    <h3 className="modal-title">Modal</h3>
+                    <h3 className="modal-title">Create Event</h3>
 
                     <div className="modal-section">
                         <label htmlFor="event-title">Event title</label>
-                        <input type="text" id="event-title" name="event-title" placeholder="PlaceHolder" />
+                        <input type="text" id="event-title" name="event-title" placeholder="Event name..." />
                     </div>
 
                     <div className="modal-section modal-field-with-icon">
