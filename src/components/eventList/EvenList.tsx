@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import "./eventList.css";
 import EventsService from "../../service/event.service";
-
+import { format } from 'date-fns';
 type EventListProps = {
   onOpenCreateModal: () => void;
 };
 
 type Event = {
-  startTime: number;
-  endTime: number;
+  startTime: string;
+  endTime: string;
   title: string;
   date: string;
 };
@@ -27,18 +27,22 @@ const EventList = ({ onOpenCreateModal }: EventListProps) => {
   }, []);
 
   const renderEvents = () => {
-    console.log(userEvents);
-    return userEvents.map((event, index) => (
-      <div className="event-item" key={index}>
-        <div className="event-item-date">
-          <div className="event-day">{event.startTime.toString().slice(7,10)}</div>
-          <div className="event-time">{event.startTime}</div>
+    return userEvents.map((event, index) => {
+        const formattedDate = format(new Date(event.startTime), 'MMM d, yyyy');
+      const formattedTime = format(new Date(event.startTime), 'HH:mm');
+  
+      return (
+        <div className="event-item" key={index}>
+          <div className="event-item-date">
+            <div className="event-day">{formattedDate}</div>
+            <div className="event-time">{formattedTime}</div>
+          </div>
+          <div className="event-item-text">{event.title}</div>
         </div>
-        <div className="event-item-text">{event.title}</div>
-      </div>
-    ));
+      );
+    });
   };
-
+  
   return (
     <div className="events-section">
       <div className="events-header">
