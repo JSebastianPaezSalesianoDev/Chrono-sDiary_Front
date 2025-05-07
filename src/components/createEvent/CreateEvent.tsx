@@ -1,8 +1,8 @@
 import './createEvent.css';
 
 type modalProps = {
-    isOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    onClose: () => {},
+    isOpen: boolean,
+    onClose: () => void,
 };
 const EventModal = ({ isOpen , onClose }: modalProps) => {
 
@@ -10,7 +10,7 @@ const EventModal = ({ isOpen , onClose }: modalProps) => {
         return null;
     }
 
-    const handleCloseOnClick = (e: any) => {
+    const handleCloseOnClick = (e:any) => {
         if (e.target === e.currentTarget) {
             onClose();
         }
