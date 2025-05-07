@@ -5,6 +5,7 @@ import './App.css'
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
 import Calendar from './components/calendar/Calendar'
+import GroupedEventList from './components/eventList/GroupedEventList'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,6 +16,7 @@ function App() {
       <Register/>
       <div className="container">
       <Calendar/>
+      <GroupedEventList/>
       </div>
     </>
   )
