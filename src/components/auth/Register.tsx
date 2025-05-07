@@ -74,7 +74,7 @@ const Register = () => {
         <div className="form-group">
           <label htmlFor="username">Username</label>
           <input
-            id="username"
+            id="usernameRegister"
             type="text"
             value={username}
             placeholder="Username"
@@ -96,7 +96,7 @@ const Register = () => {
         <div className="form-group">
           <label htmlFor="password">Password</label>
           <input
-            id="password"
+            id="passwordRegister"
             type="password"
             value={password}
             placeholder="Password"
