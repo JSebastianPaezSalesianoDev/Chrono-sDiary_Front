@@ -1,12 +1,16 @@
 import './createEvent.css';
 
-const EventModal = ({ isOpen , onClose }) => {
+type modalProps = {
+    isOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    onClose: () => {},
+};
+const EventModal = ({ isOpen , onClose }: modalProps) => {
 
     if (!isOpen) {
         return null;
     }
 
-    const handleCloseOnClick = (e) => {
+    const handleCloseOnClick = (e: any) => {
         if (e.target === e.currentTarget) {
             onClose();
         }

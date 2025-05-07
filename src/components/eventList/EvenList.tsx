@@ -1,5 +1,10 @@
 import "./eventList.css" 
-const EventList = ({ onOpenCreateModal}) => {
+
+type EventListProps = {
+    onOpenCreateModal: () => void;
+  };
+  
+  const EventList = ({ onOpenCreateModal }: EventListProps) => {
 
     return (
         <div className="events-section">
