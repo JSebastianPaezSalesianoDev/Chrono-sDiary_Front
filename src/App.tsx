@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { BrowserRouter } from "react-router-dom";
 import Login from './components/auth/Login'
+import { Route, Routes, Router } from "react-router-dom";
 import Register from './components/auth/Register'
 import Calendar from './components/calendar/Calendar'
 import GroupedEventList from './components/eventList/GroupedEventList'
@@ -13,14 +14,11 @@ function App() {
 
   return (
     <>
-{/*       <Login/>
-      <Register/>
-      <div className="container">
-      <Calendar/>
-      <GroupedEventList/>
-      </div> */}
       <BrowserRouter>
-      <Login/>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/calendar" element={<Calendar />} />
+        </Routes>
       </BrowserRouter>
     </>
   )
