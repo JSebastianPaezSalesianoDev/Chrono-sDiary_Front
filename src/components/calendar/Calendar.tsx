@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import "./CalendarApp.css"; 
-import EventModal from '../createEvent/CreateEvent';
-import EventList from '../eventList/EvenList';
+import "./CalendarApp.css";
+import EventModal from '../createEvent/CreateEvent'; 
+import EventList from '../eventList/EvenList';    
 
 const Calendar = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const currentMonth = "MAY";
-    const currentYear = 2024;
-    const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+    const [currentDate, setCurrentDate] = useState(new Date(2025, 6, 24)); 
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -18,20 +15,55 @@ const Calendar = () => {
         setIsModalOpen(false);
     };
 
+
+    const handlePrevMonth = () => {
+        setCurrentDate(prevDate => {
+            const newDate = new Date(prevDate);
+            newDate.setMonth(prevDate.getMonth() - 1);
+            return newDate;
+        });
+    };
+
+    const handleNextMonth = () => {
+        setCurrentDate(prevDate => {
+            const newDate = new Date(prevDate);
+            newDate.setMonth(prevDate.getMonth() + 1);
+            return newDate;
+        });
+    };
+
+
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth(); 
+
+    const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+    const currentMonthName = monthNames[month];
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+
+
+    const emptyDaysCount = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
+    const emptyDaysArray = Array.from({ length: emptyDaysCount }, (_, i) => `empty-${i}`);
+
+
+
     return (
         <>
             <div className="calendar-app">
-                <div className="events-section-container"> 
+                <div className="events-section-container">
                    <EventList onOpenCreateModal={openModal} />
                 </div>
                 <div className="calendar-section">
                     <div className="calendar-header">
-                        <h2 className="current-date">{currentMonth}, {currentYear}</h2>
+                        <h2 className="current-date">{currentMonthName}, {year}</h2>
                         <div className="navigation-buttons">
-                            <button className="nav-button prev">
+                            <button className="nav-button prev" onClick={handlePrevMonth}>
                                 <i className="bx bx-chevron-left"></i>
                             </button>
-                            <button className="nav-button next">
+                            <button className="nav-button next" onClick={handleNextMonth}>
                                 <i className="bx bx-chevron-right"></i>
                             </button>
                         </div>
@@ -46,14 +78,12 @@ const Calendar = () => {
                         <span>Sunday</span>
                     </div>
                     <div className="days">
-                        <span className="empty-day"></span>
-                        <span className="empty-day"></span>
-                        {daysInMonth.map(day => (
+                        {emptyDaysArray.map(key => (
+                            <span key={key} className="empty-day"></span>
+                        ))}
+                        {daysArray.map(day => (
                             <span key={day} className="day-cell">{day}</span>
                         ))}
-                        <span className="empty-day"></span>
-                        <span className="empty-day"></span>
-                        <span className="empty-day"></span>
                     </div>
                 </div>
             </div>

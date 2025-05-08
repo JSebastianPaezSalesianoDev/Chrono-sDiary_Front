@@ -1,0 +1,58 @@
+.event-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .event-header {
+    background-color: #ffe170;
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  .event-header h1 {
+    font-weight: bold;
+    font-size: 2rem;
+  }
+  
+  .event-subtitle {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .event-day-group h3 {
+    margin-top: 30px;
+    font-weight: bold;
+  }
+  
+  .event-box {
+    background: #eee;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  
+  .event-entry {
+    margin-bottom: 10px;
+  }
+  
+  .event-time {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .event-description {
+    margin: 0;
+  }
+  
+  .delete-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: red;
+  }
+  
