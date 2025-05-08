@@ -7,6 +7,13 @@ const aAuthLogin = async (userId: string, password: string) => {
         username: userId,
         password: password
     });
+
+    if (response.data.accessToken) {
+        localStorage.setItem("authToken", response.data.accessToken);
+        localStorage.setItem("userId", userId);
+    } else {
+        alert("Error en autenticación");
+    }
     return response.data;
 };
 
@@ -37,11 +44,20 @@ const aAllEvents = async (token: string) => {
     return response.data;
 };
 
+const aGetUsers = async (token: string) => {
+    const response = await axios.get(`${API_URL}users`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+}
 const EventsService = {
     aAuthLogin,
     aGetEventsById,
     aCreateEvent,
     aAllEvents,
+    aGetUsers
 };
 
 export default EventsService;

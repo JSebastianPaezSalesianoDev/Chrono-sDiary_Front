@@ -8,6 +8,7 @@ import { Route, Routes, Router } from "react-router-dom";
 import Register from './components/auth/Register'
 import Calendar from './components/calendar/Calendar'
 import GroupedEventList from './components/eventList/GroupedEventList'
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,10 +16,13 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/calendar" element={<Calendar />} />
-        </Routes>
+
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route element={<ProtectedRoute/>}>
+          <Route path="/calendar" element={<Calendar />} /> {/* Ruta protegida */}
+        </Route>
+      </Routes>
       </BrowserRouter>
     </>
   )

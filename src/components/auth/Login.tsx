@@ -14,12 +14,15 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const { accessToken } = await EventsService.aAuthLogin(username, password);
+      
   
       if (accessToken) {
         localStorage.setItem("authToken", accessToken);
-        navigate("/calendar"); // Redirige a la pantalla de calendario
+        navigate("/calendar"); 
+        console.log("Token de acceso guardado:", accessToken);
       } else {
         alert("Error en autenticación");
+        console.log("token:", accessToken);
       }
     } catch (error) {
       alert("Credenciales incorrectas");
