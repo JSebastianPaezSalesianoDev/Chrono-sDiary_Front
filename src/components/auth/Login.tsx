@@ -1,13 +1,34 @@
 import React, { useState } from "react";
 import "./Login.css";
+import EventsService from "../../service/event.service";
+import { useNavigate } from "react-router-dom";
+import Calendar from "../calendar/Calendar";
+
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate()
+  
 
-  const handleLogin = () => { 
-    console.log("Login with:", username, password);
+  const handleLogin = async () => {
+    try {
+      const { accessToken } = await EventsService.aAuthLogin(username, password);
+      
+  
+      if (accessToken) {
+        localStorage.setItem("authToken", accessToken);
+        navigate("/calendar"); 
+        console.log("Token de acceso guardado:", accessToken);
+      } else {
+        alert("Error en autenticación");
+        console.log("token:", accessToken);
+      }
+    } catch (error) {
+      alert("Credenciales incorrectas");
+    }
   };
+
 
   return (
     <div className="login-container">
