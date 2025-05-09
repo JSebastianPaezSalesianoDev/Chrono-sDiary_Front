@@ -7,7 +7,7 @@ import { Userinfo } from "../../types/UserInfo";
 
 type EventListProps = {
   onOpenCreateModal: () => void;
-  selectedDate: Date | null; 
+  selectedDate: Date | null;
 };
 
 type Event = {
@@ -19,6 +19,7 @@ type Event = {
 
 const EventList = ({ onOpenCreateModal, selectedDate }: EventListProps) => {
   const [userEvents, setUserEvents] = useState<Event[]>([]);
+  const [showAllEvents, setShowAllEvents] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,15 +37,32 @@ const EventList = ({ onOpenCreateModal, selectedDate }: EventListProps) => {
       });
   }, []);
 
-  const filteredEvents = selectedDate
+  // 🔄 Resetear "ver todos" al cambiar de día
+  useEffect(() => {
+    setShowAllEvents(false);
+  }, [selectedDate]);
+
+  const sameDayEvents = selectedDate
     ? userEvents.filter(event =>
         isSameDay(new Date(event.startTime), selectedDate)
       )
     : userEvents;
 
+  const filteredEvents = selectedDate && !showAllEvents ? sameDayEvents : userEvents;
+
   const renderEvents = () => {
-    if (filteredEvents.length === 0) {
-      return <div className="no-events">No hay eventos para este día.</div>;
+    if (selectedDate && sameDayEvents.length === 0 && !showAllEvents) {
+      return (
+        <div className="no-events">
+          <p>No hay eventos para esta fecha.</p>
+          <button
+            className="show-all-button"
+            onClick={() => setShowAllEvents(true)}
+          >
+            Ver todos
+          </button>
+        </div>
+      );
     }
 
     return filteredEvents.map((event, index) => {
@@ -63,7 +81,7 @@ const EventList = ({ onOpenCreateModal, selectedDate }: EventListProps) => {
     });
   };
 
-  return (
+  return (  
     <div className="events-section">
       <div className="events-header">
         <h2>EVENTS</h2>
