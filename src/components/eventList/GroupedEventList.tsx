@@ -23,7 +23,7 @@ const GroupedEventList = () => {
           return;
         }
         const response = await EventsService.aGetEventsById(Userinfo.token, Userinfo.userId);
-        setEvents(response.data); // Se asegura que los eventos se actualicen correctamente
+        setEvents(response.data); 
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -32,7 +32,6 @@ const GroupedEventList = () => {
     fetchEvents();
   }, []);
 
-  // Agrupar eventos por fecha (yyyy-MM-dd)
   const groupedEvents = events.reduce<Record<string, Event[]>>((acc, event) => {
     const dateKey = format(new Date(event.startTime), "yyyy-MM-dd");
     acc[dateKey] = [...(acc[dateKey] || []), event];

@@ -26,7 +26,14 @@ const aGetEventsById = async (token: string, userId: string) => {
     });
     return response.data;
 };
-
+const aGetEventsByEventId = async (token: string, userId: string) => {
+    const response = await axios.get(`${API_URL}event/${userId}/event`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+};
 const aCreateEvent = async (token: string, event: FormData) => {
     const response = await axios.post(`${API_URL}event`, event, {
         headers: {
@@ -73,7 +80,8 @@ const EventsService = {
     aCreateEvent,
     aAllEvents,
     aGetUsers,
-    aDeleteEvent
+    aDeleteEvent,
+    aGetEventsByEventId
 };
 
 export default EventsService;
