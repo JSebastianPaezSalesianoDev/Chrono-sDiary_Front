@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import "./eventList.css";
 import EventsService from "../../service/event.service";
 import { format } from 'date-fns';
+import { Navigate, useNavigate } from "react-router-dom";
+import { Userinfo } from "../../types/UserInfo";
+
 type EventListProps = {
   onOpenCreateModal: () => void;
 };
@@ -15,15 +18,15 @@ type Event = {
 
 const EventList = ({ onOpenCreateModal }: EventListProps) => {
   const [userEvents, setUserEvents] = useState<Event[]>([]);
+  const navigate = useNavigate()
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    const userId = localStorage.getItem("userId");
-  
-    if (!token || !userId) {
+
+
+    if (!Userinfo.token || !Userinfo.userId) {
       console.error("No hay token o userId en localStorage.");
       return;
     }
-    EventsService.aGetEventsById(token, userId)
+    EventsService.aGetEventsById(Userinfo.token!, Userinfo.userId!)
       .then((response) => {
         setUserEvents(response.data);
       })
@@ -34,9 +37,9 @@ const EventList = ({ onOpenCreateModal }: EventListProps) => {
 
   const renderEvents = () => {
     return userEvents.map((event, index) => {
-        const formattedDate = format(new Date(event.startTime), 'MMM d, yyyy');
+      const formattedDate = format(new Date(event.startTime), 'MMM d, yyyy');
       const formattedTime = format(new Date(event.startTime), 'HH:mm');
-  
+
       return (
         <div className="event-item" key={index}>
           <div className="event-item-date">
@@ -48,7 +51,7 @@ const EventList = ({ onOpenCreateModal }: EventListProps) => {
       );
     });
   };
-  
+
   return (
     <div className="events-section">
       <div className="events-header">
@@ -62,7 +65,7 @@ const EventList = ({ onOpenCreateModal }: EventListProps) => {
         {renderEvents()}
       </div>
       <div className="events-actions">
-        <button className="view-all-events-button">
+        <button className="view-all-events-button" onClick={() => navigate('/AllEvents')}>
           Ver todos mis eventos
         </button>
         <button className="create-event-button" onClick={onOpenCreateModal}>

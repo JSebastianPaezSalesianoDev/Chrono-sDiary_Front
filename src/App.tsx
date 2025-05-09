@@ -1,14 +1,12 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { BrowserRouter } from "react-router-dom";
 import Login from './components/auth/Login'
-import { Route, Routes, Router } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Register from './components/auth/Register'
 import Calendar from './components/calendar/Calendar'
-import GroupedEventList from './components/eventList/GroupedEventList'
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import GroupedEventList from './components/eventList/GroupedEventList';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,6 +19,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route element={<ProtectedRoute/>}>
           <Route path="/calendar" element={<Calendar />} /> {/* Ruta protegida */}
+          <Route path="/AllEvents" element={<GroupedEventList />} /> {/* Ruta protegida */}
         </Route>
       </Routes>
       </BrowserRouter>

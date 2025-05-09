@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import EventsService from "../../service/event.service";
 import "./EventGroupedList.css";
+import { Userinfo } from "../../types/UserInfo";
 
 type Event = {
   startTime: string; 
@@ -15,7 +16,11 @@ const GroupedEventList = () => {
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    EventsService.aGetEventsById("1")
+      if (!Userinfo.token || !Userinfo.userId) {
+          console.error("No hay token o userId en localStorage.");
+          return;
+        }
+ EventsService.aGetEventsById(Userinfo.token!, Userinfo.userId!)
       .then((response) => {
         setEvents(response.data);
       })
@@ -31,17 +36,19 @@ const GroupedEventList = () => {
     return acc;
   }, {});
 
-  const handleDelete = (eventId: string) => {
-    // TODO: Implementar llamada a la API para eliminar evento
-    // Ejemplo:
-    // EventsService.deleteEvent(eventId)
-    //   .then(() => {
-    //     setEvents((prev) => prev.filter((e) => e.id !== eventId));
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error deleting event:", error);
-    //   });
-  };
+const handleDelete = async (eventId: string) => {
+    if (!Userinfo.token || !Userinfo.userId) {
+        console.error("No hay token o userId en localStorage.");
+        return;
+    }
+
+    try {
+        await EventsService.aDeleteEvent(Userinfo.token, eventId);
+        setEvents((prevEvents) => prevEvents.filter((e) => e.id !== eventId));
+    } catch (error) {
+        console.error("Error deleting event:", error);
+    }
+};
 
   return (
     <div className="event-page">
