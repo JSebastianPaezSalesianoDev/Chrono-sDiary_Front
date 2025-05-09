@@ -15,7 +15,6 @@ type Event = {
 
 const EventList = ({ onOpenCreateModal }: EventListProps) => {
   const [userEvents, setUserEvents] = useState<Event[]>([]);
-
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const userId = localStorage.getItem("userId");
@@ -24,10 +23,7 @@ const EventList = ({ onOpenCreateModal }: EventListProps) => {
       console.error("No hay token o userId en localStorage.");
       return;
     }
-    const user = EventsService.aGetUsers(token);
-    console.log("user", user.then((res) => console.log("user", res)));
-
-    EventsService.aGetEventsById(token, '1')
+    EventsService.aGetEventsById(token, userId)
       .then((response) => {
         setUserEvents(response.data);
       })

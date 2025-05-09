@@ -2,15 +2,15 @@ import axios from 'axios';
 
 const API_URL = "http://localhost:8081/api/";
 
-const aAuthLogin = async (userId: string, password: string) => {
+const aAuthLogin = async (username: string, password: string) => {
     const response = await axios.post(API_URL + "auth/login", {
-        username: userId,
+        username: username,
         password: password
     });
 
     if (response.data.accessToken) {
         localStorage.setItem("authToken", response.data.accessToken);
-        localStorage.setItem("userId", userId);
+        localStorage.setItem("userId", response.data.id);
     } else {
         alert("Error en autenticación");
     }
