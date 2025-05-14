@@ -1,66 +1,43 @@
 import React, { useState } from "react";
 import "./Login.css"; 
+import { useNavigate } from "react-router-dom";
+import EventsService from "../../service/event.service";
 const Register = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>(""); 
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string>(""); 
   const [isError, setIsError] = useState<boolean>(false); 
+   const navigate = useNavigate()
 
-  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); 
-    setMessage(""); 
-    setIsError(false);
+const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault(); 
+        setMessage(""); 
+        setIsError(false);
 
-    if (!username || !email || !password) {
-      setMessage("All fields are required.");
-      setIsError(true);
-      return;
-    }
+        if (!username || !email || !password) {
+            setMessage("All fields are required.");
+            setIsError(true);
+            return;
+        }
 
-    const userRequestDto = {
-      username,
-      email,
-      password,
+        try {
+            const data = await EventsService.aRegisterUser({ username, email, password });
+
+            setMessage(data.message || "User registered successfully!");
+            setIsError(false);
+            setUsername("");
+            setEmail("");
+            setPassword("");
+
+            navigate("/"); 
+
+        } catch (error: any) {
+            setMessage(error.message || "Registration failed.");
+            setIsError(true);
+        }
     };
 
-    try {
-      const response = await fetch("http://localhost:8081/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userRequestDto),
-      });
-
-      const data = await response.json(); 
-
-      if (response.ok) {
-        setMessage(data.message || "User registered successfully!"); 
-        setIsError(false);
-        setUsername("");
-        setEmail("");
-        setPassword("");
-        // window.location.href = '/login'; // redirige al login
-      } else {
-
-        let errorMessage = "Registration failed.";
-        if (data && data.message) {
-            errorMessage = data.message;
-        } else if (data && data.errors && Array.isArray(data.errors)) {
-            errorMessage = data.errors.map((err: any) => err.defaultMessage || err.msg).join(", ");
-        } else if (data && data.error) {
-            errorMessage = data.error;
-        }
-        setMessage(errorMessage);
-        setIsError(true);
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      setMessage("An unexpected error occurred. Please try again.");
-      setIsError(true);
-    }
-  };
 
   return (
     <div className="login-container">
@@ -114,7 +91,7 @@ const Register = () => {
         </div>
         <div className="signup-link">
           <p>
-            Do you have an account? <a href="/login">Log in</a> 
+            Do you have an account? <a onClick={()=>  navigate("/") }>Log in</a> 
           </p>
         </div>
       </form>

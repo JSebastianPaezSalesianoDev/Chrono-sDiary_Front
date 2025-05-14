@@ -20,6 +20,7 @@ function App() {
         <Route element={<ProtectedRoute/>}>
           <Route path="/calendar" element={<Calendar />} /> {/* Ruta protegida */}
           <Route path="/AllEvents" element={<GroupedEventList />} /> {/* Ruta protegida */}
+          <Route path="/Register" element={<Register/>}/>
         </Route>
       </Routes>
       </BrowserRouter>

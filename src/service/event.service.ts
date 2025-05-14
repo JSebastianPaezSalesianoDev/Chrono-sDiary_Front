@@ -74,6 +74,21 @@ const aDeleteEvent = async (token: string, eventId: string) => {
         throw error; 
     }
 };
+const aRegisterUser = async (userRequestDto: { username: string; email: string; password: string }) => {
+    try {
+        const response = await axios.post(`${API_URL}users`, userRequestDto, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        return response.data;
+    } catch (error: any) {
+        console.error("error:", error);
+        throw error.response?.data || { message: "Error." };
+    }
+};
+
 const EventsService = {
     aAuthLogin,
     aGetEventsById,
@@ -81,7 +96,8 @@ const EventsService = {
     aAllEvents,
     aGetUsers,
     aDeleteEvent,
-    aGetEventsByEventId
+    aGetEventsByEventId,
+    aRegisterUser
 };
 
 export default EventsService;
