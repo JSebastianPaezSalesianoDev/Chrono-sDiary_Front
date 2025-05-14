@@ -16,10 +16,10 @@ body {
 
 .calendar-app {
     display: flex;
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
     min-height: 600px; 
-    height: 70vh; 
+    height: 100%; 
     max-height: 800px; 
     background-color: #ffffff;
     border: 1px solid #cccccc;
@@ -40,12 +40,15 @@ body {
 /*calendario*/
 
 .calendar-section {
-    width: 65%; 
+    width: 65%;
     padding: 1.5rem;
-    display: flex;
+    display: flex
+;
     flex-direction: column;
-    height: 100%; 
-    flex-shrink: 0; 
+    height: 100%;
+    flex-shrink: 0;
+    max-height: 40rem;
+    overflow-y: auto;
 }
 
 .calendar-header {

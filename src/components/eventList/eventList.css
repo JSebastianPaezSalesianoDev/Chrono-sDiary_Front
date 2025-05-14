@@ -71,7 +71,8 @@
 .events-list {
     flex-grow: 1; 
     overflow-y: auto; 
-    margin-bottom: 1rem; 
+    margin-bottom: 1rem;
+    max-height: 23.5rem;
 }
 
 .event-item {

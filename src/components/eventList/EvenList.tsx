@@ -37,7 +37,6 @@ const EventList = ({ onOpenCreateModal, selectedDate }: EventListProps) => {
       });
   }, []);
 
-  // 🔄 Resetear "ver todos" al cambiar de día
   useEffect(() => {
     setShowAllEvents(false);
   }, [selectedDate]);
