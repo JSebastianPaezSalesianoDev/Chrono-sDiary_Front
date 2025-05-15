@@ -1,7 +1,12 @@
 .event-page {
     padding: 20px;
     font-family: Arial, sans-serif;
-  }
+    background-color: lightgoldenrodyellow;
+    width: 52vw;
+    HEIGHT: 89vh;
+    OVERFLOW-Y: auto;
+    padding-bottom: 2rem;
+}
   
   .event-header {
     background-color: #ffe170;

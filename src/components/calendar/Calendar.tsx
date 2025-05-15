@@ -134,9 +134,14 @@ const CalendarApp = () => {
                                  date.getDate() === selectedDate.getDate();
               return (
                 <span
-                  key={day}
-                  className={`day-cell ${isSelected ? 'selected-day' : ''}`}
-                  onClick={() => setSelectedDate(date)}
+                  key={ day}
+          /*        className={`day-cell ${isSelected ? 'selected-day' : ''}`} */
+                  className = {isSelected ? 'select-day': 'day-cell'}
+                  onClick={() =>{
+                    setSelectedDate(date)
+                    
+
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   {day}

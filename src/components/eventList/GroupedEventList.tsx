@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import EventsService from "../../service/event.service";
 import "./EventGroupedList.css";
 import { Userinfo } from "../../types/UserInfo";
@@ -23,7 +23,7 @@ const GroupedEventList = () => {
           return;
         }
         const response = await EventsService.aGetEventsById(Userinfo.token, Userinfo.userId);
-        setEvents(response.data); 
+        setEvents(response.data);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -33,7 +33,9 @@ const GroupedEventList = () => {
   }, []);
 
   const groupedEvents = events.reduce<Record<string, Event[]>>((acc, event) => {
-    const dateKey = format(new Date(event.startTime), "yyyy-MM-dd");
+    const dateKey = format(parseISO(event.startTime), "MMMM d, yyyy");
+    console.log("Antes:", event.startTime);
+    console.log("Después:", format(parseISO(event.startTime), "MMMM d, yyyy"));
     acc[dateKey] = [...(acc[dateKey] || []), event];
     return acc;
   }, {});
@@ -59,19 +61,18 @@ const GroupedEventList = () => {
       </div>
       <h2 className="event-subtitle">Username’s Events</h2>
       <div className="buttonDiv">
-               <button 
-        className="back-button" 
-        onClick={() => window.history.back()}
-      >
-        ⬅ Ir atrás
-      </button>
+        <button
+          className="back-button"
+          onClick={() => window.history.back()}
+        >
+          ⬅ Ir atrás
+        </button>
       </div>
 
       <div className="event-list">
         {Object.entries(groupedEvents).map(([date, dayEvents]) => (
           <div key={date} className="event-day-group">
-            <h3>{format(new Date(date), "MMMM d, yyyy").toUpperCase()}</h3>
-
+            <h3>{format(new Date(date), "MMMM d, yyyy").toUpperCase() || 'nullito'} </h3>
             {dayEvents.map((event) => (
               <div className="event-box" key={event.id}>
                 <div className="event-entry">
