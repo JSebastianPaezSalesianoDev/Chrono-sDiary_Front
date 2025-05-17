@@ -89,6 +89,49 @@ const aRegisterUser = async (userRequestDto: { username: string; email: string; 
     }
 };
 
+export type InvitationStatus = "PENDING" | "ACCEPTED" | "DECLINED";
+
+export type InvitationResponse = {
+  id: string; 
+  eventId: string;
+  eventTitle?: string; 
+  invitingUserId?: string;
+  invitingUserName?: string; 
+  userId: string; 
+  status: InvitationStatus;
+  creationDate: string;
+};
+
+
+const aGetUserInvitations = async (token: string, userId: string) => {
+  const response = await axios.get(`${API_URL}invitation/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const aUpdateInvitationStatus = async (
+  token: string,
+  invitationId: string,
+  eventId: string, 
+  userId: string, 
+  status: InvitationStatus
+) => {
+  const response = await axios.put(
+    `${API_URL}invitation/${invitationId}`,
+    { eventId, userId, status }, 
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data; 
+};
+
+
 const EventsService = {
     aAuthLogin,
     aGetEventsById,
@@ -97,7 +140,9 @@ const EventsService = {
     aGetUsers,
     aDeleteEvent,
     aGetEventsByEventId,
-    aRegisterUser
+    aRegisterUser,
+    aGetUserInvitations,
+    aUpdateInvitationStatus,
 };
 
 export default EventsService;

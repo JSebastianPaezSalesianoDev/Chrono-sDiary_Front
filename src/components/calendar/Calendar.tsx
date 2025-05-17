@@ -15,7 +15,9 @@ type Event = {
 
 };
 
-
+const refreshCalendarData = () => {
+    console.log("Calendar data refresh triggered");
+     };
 const CalendarApp = () => { 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date(2025, 6, 24));
@@ -97,8 +99,8 @@ const CalendarApp = () => {
           <EventList
             onOpenCreateModal={openModal}
             selectedDate={selectedDate}
-            events={userEvents} 
-            refreshEvents={fetchUserEvents} 
+       
+             refreshEvents={refreshCalendarData}
           />
         </div>
         <div className="calendar-section">
@@ -135,7 +137,7 @@ const CalendarApp = () => {
               return (
                 <span
                   key={ day}
-          /*        className={`day-cell ${isSelected ? 'selected-day' : ''}`} */
+  
                   className = {isSelected ? 'select-day': 'day-cell'}
                   onClick={() =>{
                     setSelectedDate(date)

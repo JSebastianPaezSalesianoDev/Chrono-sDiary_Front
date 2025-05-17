@@ -74,7 +74,7 @@ body {
 
 .users-events-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr); 
   gap: 25px;
   width: 100%;
   padding: 0 10px;
@@ -120,12 +120,7 @@ body {
   background-color: #fff9c4;
 }
 
-.users-events-loading-message { 
-}
-.users-events-error-message { 
-}
-.users-events-no-users-message { 
-}
+
 
 @media (max-width: 600px) {
   .users-events-title-text {
@@ -135,7 +130,7 @@ body {
     max-width: 100%;
   }
   .users-events-cards-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; 
     gap: 20px;
   }
   .users-events-user-card {
