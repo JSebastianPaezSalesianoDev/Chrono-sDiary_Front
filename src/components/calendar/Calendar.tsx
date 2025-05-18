@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import "./CalendarApp.css";
 import EventModal from '../createEvent/CreateEvent';
 import EventList from '../eventList/EvenList';
-import EventsService from '../../service/event.service'; 
-import { Userinfo } from '../../types/UserInfo'; 
+import EventsService from '../../service/event.service';
+import { Userinfo } from '../../types/UserInfo';
 
 
 type Event = {
-  _id: string; 
+  _id: string;
   startTime: string;
   endTime: string;
   title: string;
@@ -16,12 +16,12 @@ type Event = {
 };
 
 const refreshCalendarData = () => {
-    console.log("Calendar data refresh triggered");
-     };
-const CalendarApp = () => { 
+  console.log("Calendar data refresh triggered");
+};
+const CalendarApp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date(2025, 6, 24));
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2025, 6, 24)); 
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2025, 6, 24));
 
   const [userEvents, setUserEvents] = useState<Event[]>([]);
 
@@ -34,19 +34,19 @@ const CalendarApp = () => {
 
     EventsService.aGetEventsById(Userinfo.token, Userinfo.userId)
       .then((response) => {
- 
+
         setUserEvents(response.data || []);
       })
       .catch((error) => {
         console.error("Error fetching events:", error);
-        setUserEvents([]); 
+        setUserEvents([]);
       });
   };
 
-  
+
   useEffect(() => {
     fetchUserEvents();
-  }, []); 
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -57,7 +57,7 @@ const CalendarApp = () => {
   };
 
   const handleEventCreated = () => {
-    fetchUserEvents(); 
+    fetchUserEvents();
   };
 
   const handlePrevMonth = () => {
@@ -99,13 +99,25 @@ const CalendarApp = () => {
           <EventList
             onOpenCreateModal={openModal}
             selectedDate={selectedDate}
-       
-             refreshEvents={refreshCalendarData}
+
+            refreshEvents={refreshCalendarData}
           />
         </div>
         <div className="calendar-section">
           <div className="calendar-header">
             <h2 className="current-date">{currentMonthName}, {year}</h2>
+            <button
+              className="logout-button"
+              onClick={() =>{
+                 window.location.href = "/" 
+                 localStorage.removeItem("authToken")
+                 localStorage.removeItem("userId")
+                 localStorage.removeItem("username")
+              }}
+            >
+              Logout
+            </button>
+
             <div className="navigation-buttons">
               <button className="nav-button prev" onClick={handlePrevMonth}>
                 <i className="bx bx-chevron-left"></i>
@@ -131,17 +143,17 @@ const CalendarApp = () => {
             {daysArray.map(day => {
               const date = new Date(year, month, day);
               const isSelected = selectedDate &&
-                                 date.getFullYear() === selectedDate.getFullYear() &&
-                                 date.getMonth() === selectedDate.getMonth() &&
-                                 date.getDate() === selectedDate.getDate();
+                date.getFullYear() === selectedDate.getFullYear() &&
+                date.getMonth() === selectedDate.getMonth() &&
+                date.getDate() === selectedDate.getDate();
               return (
                 <span
-                  key={ day}
-  
-                  className = {isSelected ? 'select-day': 'day-cell'}
-                  onClick={() =>{
+                  key={day}
+
+                  className={isSelected ? 'select-day' : 'day-cell'}
+                  onClick={() => {
                     setSelectedDate(date)
-                    
+
 
                   }}
                   style={{ cursor: "pointer" }}
@@ -157,8 +169,8 @@ const CalendarApp = () => {
       <EventModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        onEventCreated={handleEventCreated} 
-        selectedCalendarDate={selectedDate} 
+        onEventCreated={handleEventCreated}
+        selectedCalendarDate={selectedDate}
       />
     </>
   );
