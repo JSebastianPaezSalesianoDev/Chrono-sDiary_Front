@@ -80,7 +80,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
         Userinfo.username = profileUsername; 
       }
 
-      onClose(); 
+     setTimeout(() => {
+       onClose();
+     }, 1500);
     } catch (err: any) {
       setProfileError(err?.response?.data?.message || err.message || "Error updating profile.");
     } finally {

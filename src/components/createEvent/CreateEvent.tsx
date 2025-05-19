@@ -177,6 +177,7 @@ const EventModal = ({ isOpen, onClose, onEventCreated, selectedCalendarDate }: M
                             placeholder="email1@example.com, email2@example.com"
                             value={invitedEmailsString}
                             onChange={(e) => setInvitedEmailsString(e.target.value)}
+                            required
                         />
                     </div>
                 </div>

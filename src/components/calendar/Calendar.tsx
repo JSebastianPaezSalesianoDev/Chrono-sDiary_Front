@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./CalendarApp.css";
 import EventModal from '../createEvent/CreateEvent';
-import EventList from '../eventList/EvenList'; 
+import EventList from '../eventList/EvenList';
 import EventsService from '../../service/event.service';
 import { Userinfo } from '../../types/UserInfo';
 import ProfileModal from '../profile/profile';
@@ -24,11 +24,13 @@ const CalendarApp = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 6, 24));
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2025, 6, 24));
   const [showSettings, setShowSettings] = useState(false);
-  const [showProfile, setShowProfile] = useState(false); 
+  const [showProfile, setShowProfile] = useState(false);
 
   const [userEvents, setUserEvents] = useState<Event[]>([]);
 
   const fetchUserEvents = () => {
+    Userinfo.token = localStorage.getItem("authToken");
+    Userinfo.userId = localStorage.getItem("userId");
     if (!Userinfo.token || !Userinfo.userId) {
       console.error("No hay token o userId en localStorage.");
       setUserEvents([]);
@@ -106,7 +108,7 @@ const CalendarApp = () => {
         {showSettings && (
           <div className="settings-dropdown">
             <button
-              className="settings-profile-btn" 
+              className="settings-profile-btn"
               onClick={() => {
                 setShowProfile(true);
                 setShowSettings(false);
@@ -123,7 +125,7 @@ const CalendarApp = () => {
                 Userinfo.token = null;
                 Userinfo.userId = null;
                 Userinfo.username = null;
-                window.location.href = "/"; 
+                window.location.href = "/";
               }}
             >
               Logout
@@ -132,9 +134,9 @@ const CalendarApp = () => {
         )}
       </div>
 
-      <ProfileModal 
-        isOpen={showProfile} 
-        onClose={() => setShowProfile(false)} 
+      <ProfileModal
+        isOpen={showProfile}
+        onClose={() => setShowProfile(false)}
       />
 
       <div className="calendar-app">
