@@ -169,3 +169,84 @@ body {
     cursor: default;
 }
 
+
+/*contenedor de la tuerca*/
+.settings-gear-container {
+  position: absolute;
+  top: 15px; 
+  right: 20px; 
+  z-index: 100; 
+}
+
+.settings-gear-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-gear-btn i.bx-cog {
+  font-size: 2rem; 
+  color: #333;
+  transition: color 0.2s;
+}
+.settings-gear-btn:hover i.bx-cog {
+  color: #007bff; 
+}
+
+.settings-dropdown {
+  position: absolute;
+  top: calc(100% + 5px); 
+  right: 0; 
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 150px; 
+  padding: 8px 0;
+  z-index: 101; 
+  list-style: none; 
+  margin: 0;
+}
+
+
+.settings-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #333; 
+  padding: 10px 20px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem; 
+  transition: background-color 0.2s, color 0.2s;
+  display: block; 
+}
+
+.settings-dropdown button:hover {
+  background-color: #f0f0f0; 
+}
+
+
+.settings-dropdown .settings-profile-btn {
+  font-weight: 500; 
+}
+.settings-dropdown .settings-profile-btn:hover {
+  background-color: #e6f7ff;
+  color: #0056b3;
+}
+
+
+.settings-dropdown .settings-logout-btn {
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.settings-dropdown .settings-logout-btn:hover {
+  background-color: #ffeaea; 
+  color: #b71c1c; 
+}
+
