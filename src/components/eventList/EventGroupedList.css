@@ -10,17 +10,18 @@ body {
 }
 
 .event-page {
-  max-width: 700px;
-  margin: 30px auto;
-  background-color: lightgoldenrodyellow;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  min-height: 89vh;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto 200px auto auto;
+    background-color: lightgoldenrodyellow;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex
+;
+    flex-direction: column;
+    min-height: 89vh;
 }
-
 .event-header {
   background-color: #ffe170;
   text-align: center;
