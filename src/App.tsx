@@ -16,22 +16,21 @@ function App() {
 
   return (
     <>
-    <ForgotPassword/>
       <BrowserRouter>
 
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/Register" element={<Register/>}></Route>
-        <Route element={<ProtectedRoute/>}>
-          <Route path="/calendar" element={<Calendar />} /> {/* Ruta protegida */}
-          <Route path="/AllEvents" element={<GroupedEventList />} /> {/* Ruta protegida */}
-          <Route path="/AllUserEvents" element={<AllUserEvents />} /> {/* Ruta protegida */}
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
-        </Route>
-      </Routes>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/calendar" element={<Calendar />} /> 
+            <Route path="/AllEvents" element={<GroupedEventList />} /> 
+            <Route path="/AllUserEvents" element={<AllUserEvents />} /> 
+          </Route>
+        </Routes>
       </BrowserRouter>
     </>
-    
+
   )
 }
 
