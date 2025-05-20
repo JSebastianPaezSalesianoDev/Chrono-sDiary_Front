@@ -103,6 +103,17 @@ const aResetPassword = async (email: string) => {
 
 
 };
+
+const aGetUserById = async (token: string, userId: string) => {
+
+    const response = await axios.get(`${API_URL}users/${userId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`, // Include token for authentication
+        },
+    });
+    return response.data;
+
+};
 const EventsService = {
     aAuthLogin,
     aGetEventsById,
@@ -112,7 +123,8 @@ const EventsService = {
     aDeleteEvent,
     aGetEventsByEventId,
     aRegisterUser,
-    aResetPassword
+    aResetPassword,
+    aGetUserById
 };
 
 export default EventsService;
