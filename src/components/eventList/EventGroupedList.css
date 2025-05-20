@@ -1,87 +1,168 @@
-.event-page {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: lightgoldenrodyellow;
-    width: 52vw;
-    HEIGHT: 89vh;
-    OVERFLOW-Y: auto;
-    padding-bottom: 2rem;
-}
-  
-  .event-header {
-    background-color: #ffe170;
-    text-align: center;
-    padding: 10px 0;
-  }
-  
-  .event-header h1 {
-    font-weight: bold;
-    font-size: 2rem;
-  }
-  
-  .event-subtitle {
-    text-align: center;
-    margin: 20px 0;
-  }
-  .event-title {
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-bottom: 4px;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fdfaf0;
+  color: #333;
 }
 
-  .event-day-group h3 {
-    margin-top: 30px;
-    font-weight: bold;
-  }
-  
-  .event-box {
-    background: #eee;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    position: relative;
-  }
-  
-  .event-entry {
-    margin-bottom: 10px;
-  }
-  
-  .event-time {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .event-description {
-    margin: 0;
-  }
-  
-  .delete-button {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: red;
-  }
-  .back-button {
-  background-color: #FFDD74; 
+* {
+  box-sizing: border-box;
+}
+
+.event-page {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto 200px auto auto;
+    background-color: lightgoldenrodyellow;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex
+;
+    flex-direction: column;
+    min-height: 89vh;
+}
+.event-header {
+  background-color: #ffe170;
+  text-align: center;
+  padding: 20px 15px;
+}
+
+.event-header h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #4A3B00;
+  margin: 0;
+}
+
+.controls-container {
+  padding: 15px 25px 0;
+  display: flex;
+}
+
+.back-button {
+  background-color: #FFDD74;
   color: #333;
   border: none;
-  padding: 10px 15px;
-  border-radius: 8px;
-  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .back-button:hover {
-  background-color: #FFD34E; 
+  background-color: #FFD34E;
+  transform: translateY(-2px);
 }
 
-.buttonDiv{
+.event-subtitle {
+  text-align: center;
+  margin: 20px 0 25px 0;
+  font-size: 1.6rem;
+  color: #5a4d1d;
+  font-weight: 600;
+}
+
+.event-list {
+  padding: 0 25px 25px;
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: calc(89vh - 200px);
+}
+
+.event-day-group {
+  margin-bottom: 30px;
+}
+
+.event-day-group h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #805500;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ffe170;
+  text-transform: uppercase;
+}
+
+.event-box {
+  background: #fffcf0;
+  padding: 18px 20px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
   display: flex;
-  flex-direction: column-reverse  ;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.event-entry {
+  flex-grow: 1;
+  margin-right: 15px;
+}
+
+.event-title {
+  font-weight: bold;
+  font-size: 1.15rem;
+  margin-top: 0;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.event-time {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.event-description {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.6rem;
+  color: #e74c3c;
+  padding: 0 5px;
+  margin-top: -2px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.delete-button:hover {
+  color: #c0392b;
+  transform: scale(1.15);
+}
+
+.event-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.event-list::-webkit-scrollbar-track {
+  background: #fff8e7;
+  border-radius: 10px;
+}
+
+.event-list::-webkit-scrollbar-thumb {
+  background-color: #FFDD74;
+  border-radius: 10px;
+  border: 2px solid #fff8e7;
+}
+
+.event-list::-webkit-scrollbar-thumb:hover {
+  background-color: #FFD34E;
 }

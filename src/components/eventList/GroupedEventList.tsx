@@ -34,8 +34,6 @@ const GroupedEventList = () => {
 
   const groupedEvents = events.reduce<Record<string, Event[]>>((acc, event) => {
     const dateKey = format(parseISO(event.startTime), "MMMM d, yyyy");
-    console.log("Antes:", event.startTime);
-    console.log("Después:", format(parseISO(event.startTime), "MMMM d, yyyy"));
     acc[dateKey] = [...(acc[dateKey] || []), event];
     return acc;
   }, {});
@@ -59,8 +57,7 @@ const GroupedEventList = () => {
       <div className="event-header">
         <h1>EVENTS</h1>
       </div>
-      <h2 className="event-subtitle">Username’s Events</h2>
-      <div className="buttonDiv">
+      <div className="controls-container">
         <button
           className="back-button"
           onClick={() => window.history.back()}
@@ -68,6 +65,7 @@ const GroupedEventList = () => {
           ⬅ Ir atrás
         </button>
       </div>
+      <h2 className="event-subtitle">{Userinfo.username ? `${Userinfo.username}’s Events` : 'My Events'}</h2>
 
       <div className="event-list">
         {Object.entries(groupedEvents).map(([date, dayEvents]) => (
@@ -94,7 +92,6 @@ const GroupedEventList = () => {
                   🗑
                 </button>
               </div>
-
             ))}
           </div>
         ))}

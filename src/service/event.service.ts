@@ -11,7 +11,7 @@ const aAuthLogin = async (username: string, password: string) => {
     if (response.data.accessToken) {
         localStorage.setItem("authToken", response.data.accessToken);
         localStorage.setItem("userId", response.data.id);
-        localStorage.setItem("username",response.data.username)
+        localStorage.setItem("username", response.data.username)
     } else {
         alert("Error en autenticación");
     }
@@ -71,7 +71,7 @@ const aDeleteEvent = async (token: string, eventId: string) => {
         return response.data;
     } catch (error) {
         console.error("Error deleting event:", error);
-        throw error; 
+        throw error;
     }
 };
 const aRegisterUser = async (userRequestDto: { username: string; email: string; password: string }) => {
@@ -92,45 +92,66 @@ const aRegisterUser = async (userRequestDto: { username: string; email: string; 
 export type InvitationStatus = "PENDING" | "ACCEPTED" | "DECLINED";
 
 export type InvitationResponse = {
-  id: string; 
-  eventId: string;
-  eventTitle?: string; 
-  invitingUserId?: string;
-  invitingUserName?: string; 
-  userId: string; 
-  status: InvitationStatus;
-  creationDate: string;
+    id: string;
+    eventId: string;
+    eventTitle?: string;
+    invitingUserId?: string;
+    invitingUserName?: string;
+    userId: string;
+    status: InvitationStatus;
+    creationDate: string;
 };
 
 
 const aGetUserInvitations = async (token: string, userId: string) => {
-  const response = await axios.get(`${API_URL}invitation/user/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+    const response = await axios.get(`${API_URL}invitation/user/${userId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
 };
 
 const aUpdateInvitationStatus = async (
-  token: string,
-  invitationId: string,
-  eventId: string, 
-  userId: string, 
-  status: InvitationStatus
+    token: string,
+    invitationId: string,
+    eventId: string,
+    userId: string,
+    status: InvitationStatus
 ) => {
-  const response = await axios.put(
-    `${API_URL}invitation/${invitationId}`,
-    { eventId, userId, status }, 
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return response.data; 
+    const response = await axios.put(
+        `${API_URL}invitation/${invitationId}`,
+        { eventId, userId, status },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    return response.data;
 };
 
+const aUpdateUser = async (
+    token: string,
+    userId: string,
+    userRequestDto: {
+        username: string;
+        email: string;
+        password: string;
+    }
+) => {
+    const response = await axios.put(
+        `${API_URL}users/${userId}`,
+        userRequestDto,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        }
+    );
+    return response.data;
+};
 
 const EventsService = {
     aAuthLogin,
@@ -143,6 +164,7 @@ const EventsService = {
     aRegisterUser,
     aGetUserInvitations,
     aUpdateInvitationStatus,
+    aUpdateUser,
 };
 
 export default EventsService;
