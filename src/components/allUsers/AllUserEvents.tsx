@@ -18,6 +18,19 @@ const AllUsersEvents = () => {
 
   const navigate = useNavigate();
 
+  const fetchAndLogUserById = async (id: string, token: string) => {
+    try {
+      const user = await EventsService.aGetUserById(token, id);
+      console.log('Usuario obtenido:', user);
+      if (user && user.username) {
+        localStorage.setItem('viewedUsername', user.username);
+      }
+      return user;
+    } catch (error) {
+      console.error('Error al obtener usuario por id:', error);
+      return null;
+    }
+  };
   useEffect(() => {
     const fetchUsers = async () => {
       if (!userInfo.token || !userInfo.userId) {
@@ -102,18 +115,15 @@ const AllUsersEvents = () => {
         <div className="users-events-cards-grid">
           {users.map((user) => (
             <div className="users-events-user-card" key={user.id}>
-                               <i
-                     className='bx bx-pencil edit-user-icon'
-                     onClick={(e) => {
-                         e.stopPropagation();
-                         handleEditUserClick(user.id);
-                     }}
-                     title={`Edit user ${user.username}`}
-                 ></i>
               <div className="users-events-username-label">{user.username}</div>
               <button
                 className="users-events-view-events-button"
-                onClick={() => handleViewEventsClick(user.id)}
+                onClick={async () => {
+                  if (userInfo.token) {
+                    await fetchAndLogUserById(user.id, userInfo.token);
+                  }
+                  handleViewEventsClick(user.id);
+                }}
               >
                 Ver eventos
               </button>
