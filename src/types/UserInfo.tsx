@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import EventsService from "../service/event.service";
 
 export const useUserInfo = () => {
@@ -8,21 +8,41 @@ export const useUserInfo = () => {
         username: localStorage.getItem("username")
     });
 
-    const [userRole, setUserRole] = useState<string | null>(null);
+    const [userData, setUserData] = useState<any | null>(null);
+    const [loadingRole, setLoadingRole] = useState(true);
 
     useEffect(() => {
-        if (userInfo.token && userInfo.userId) {
-            const fetchUserRole = async () => {
+        const fetchUserData = async () => {
+            if (userInfo.token && userInfo.userId) {
                 try {
-                    const role = await EventsService.aGetUserById(userInfo.token!, userInfo.userId!);
-                    setUserRole(role);
+                    setLoadingRole(true);
+                    const data = await EventsService.aGetUserById(userInfo.token, userInfo.userId);
+                    setUserData(data);
                 } catch (error) {
-                    console.error("Error fetching user role:", error);
+                    console.error("Error fetching user data:", error);
+                    setUserData(null);
+                } finally {
+                    setLoadingRole(false);
                 }
-            };
-            fetchUserRole();
-        }
+            } else {
+                setUserData(null);
+                setLoadingRole(false);
+            }
+        };
+
+        fetchUserData();
     }, [userInfo.token, userInfo.userId]);
 
-    return { userInfo, userRole };
+    const isAdmin = userData?.roles?.some((role: any) => role.name === "ADMIN") || false;
+
+    return {
+        userInfo: {
+            token: userInfo.token,
+            userId: userInfo.userId,
+            username: userInfo.username
+        },
+        userData,
+        isAdmin,
+        loadingRole
+    };
 };

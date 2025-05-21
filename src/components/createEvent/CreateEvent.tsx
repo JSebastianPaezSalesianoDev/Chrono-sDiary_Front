@@ -1,7 +1,7 @@
 import './createEvent.css';
 import { useState, useEffect } from 'react';
 import EventsService from '../../service/event.service'; 
-import { Userinfo } from '../../types/UserInfo'; 
+import {  useUserInfo } from '../../types/UserInfo'; 
 import { format } from 'date-fns'; 
 
 type ModalProps = {
@@ -14,7 +14,7 @@ type ModalProps = {
 const EventModal = ({ isOpen, onClose, onEventCreated, selectedCalendarDate }: ModalProps) => {
     const [title, setTitle] = useState('');
     const [eventDate, setEventDate] = useState('');
-  
+    const { userInfo } = useUserInfo();
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [invitedEmailsString, setInvitedEmailsString] = useState(''); 
@@ -57,7 +57,7 @@ const EventModal = ({ isOpen, onClose, onEventCreated, selectedCalendarDate }: M
         setError(null);
         setIsLoading(true);
 
-        if (!Userinfo.token) {
+        if (!userInfo.token) {
             setError("Authentication token not found. Please log in.");
             setIsLoading(false);
             return;
@@ -94,7 +94,7 @@ const EventModal = ({ isOpen, onClose, onEventCreated, selectedCalendarDate }: M
         };
 
         try {
-            await EventsService.aCreateEvent(Userinfo.token, eventData);
+            await EventsService.aCreateEvent(userInfo.token, eventData);
             onEventCreated(); 
             onClose(); 
         } catch (err: any) {
@@ -207,7 +207,7 @@ const EventModal = ({ isOpen, onClose, onEventCreated, selectedCalendarDate }: M
 
                 <div className="modal-section owner-section">
                     <label>Owner</label>
-                    <span className="owner-name">{Userinfo.username || 'Current User'}</span>
+                    <span className="owner-name">{userInfo.username || 'Current User'}</span>
                 </div>
 
                 <div className="modal-actions">

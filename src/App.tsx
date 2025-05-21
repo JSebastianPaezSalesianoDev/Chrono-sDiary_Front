@@ -23,9 +23,10 @@ function App() {
           <Route path="/Register" element={<Register />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route element={<ProtectedRoute />}>
-            <Route path="/calendar" element={<Calendar />} /> 
-            <Route path="/AllEvents" element={<GroupedEventList />} /> 
-            <Route path="/AllUserEvents" element={<AllUserEvents />} /> 
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/AllEvents" element={<GroupedEventList />} />
+            <Route path="/AllUserEvents" element={<AllUserEvents />} />
+            <Route path="/events/:userId" element={<GroupedEventList />} />
           </Route>
         </Routes>
       </BrowserRouter>

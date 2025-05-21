@@ -91,6 +91,13 @@ body {
   align-items: center;
   text-align: center;
 }
+.edit-user-icon{
+      margin-inline: 8px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: red;
+}
+
 
 .users-events-username-label {
   background-color: #d3b8ae;

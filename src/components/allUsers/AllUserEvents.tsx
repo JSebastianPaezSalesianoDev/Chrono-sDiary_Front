@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './AllUserEvents.css';
-import { Userinfo } from '../../types/UserInfo';
+import { useUserInfo } from '../../types/UserInfo'; 
 import EventsService from '../../service/event.service';
+import { useNavigate } from 'react-router-dom';
 
 type UserResponseDto = {
   id: string;
@@ -9,20 +10,26 @@ type UserResponseDto = {
 };
 
 const AllUsersEvents = () => {
+  const { userInfo, userRole } = useUserInfo();
+
   const [users, setUsers] = useState<UserResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchUsers = async () => {
-      if (!Userinfo.token || !Userinfo.userId) {
-        console.error("No token or UserID found in localstorage.");
+      if (!userInfo.token || !userInfo.userId) {
+        setLoading(false);
+        setError("User not authenticated.");
         return;
       }
+
       try {
         setLoading(true);
         setError(null);
-        const fetchedUsers = await EventsService.aGetUsers(Userinfo.token);
+        const fetchedUsers = await EventsService.aGetUsers(userInfo.token);
         if (Array.isArray(fetchedUsers)) {
           setUsers(fetchedUsers);
         } else if (fetchedUsers && Array.isArray(fetchedUsers.users)) {
@@ -30,24 +37,43 @@ const AllUsersEvents = () => {
         } else if (fetchedUsers && Array.isArray(fetchedUsers.data)) {
           setUsers(fetchedUsers.data);
         } else {
-          console.warn("Fetched users data is not an array, object with 'users' array, or object with 'data' array:", fetchedUsers);
           setUsers([]);
           setError("Unexpected data format received from server.");
         }
       } catch (err) {
-        console.error("Failed to fetch users:", err);
-        setError(err.message || "Failed to fetch users. Please try again.");
+        setError((err as Error).message || "Failed to fetch users. Please try again.");
         setUsers([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUsers();
-  }, [Userinfo.token]);
+    if (userInfo.token) {
+       fetchUsers();
+    } else {
+       setLoading(false);
+       setError("User not authenticated.");
+    }
+
+  }, [userInfo.token]);
+
+  const handleViewEventsClick = (userId: string) => {
+    navigate(`/events/${userId}`);
+  };
 
   return (
     <div className="users-events-page-container">
+                <button
+                  className="settings-logout-btn"
+                  onClick={() => {
+                    localStorage.removeItem("authToken");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("username");
+                    navigate("/");
+                  }}
+                >
+                  Logout
+                </button>
       <div className="users-events-title-banner">
         <h1 className="users-events-title-text">ALL USERS/EVENTS</h1>
       </div>
@@ -76,8 +102,21 @@ const AllUsersEvents = () => {
         <div className="users-events-cards-grid">
           {users.map((user) => (
             <div className="users-events-user-card" key={user.id}>
+                               <i
+                     className='bx bx-pencil edit-user-icon'
+                     onClick={(e) => {
+                         e.stopPropagation();
+                         handleEditUserClick(user.id);
+                     }}
+                     title={`Edit user ${user.username}`}
+                 ></i>
               <div className="users-events-username-label">{user.username}</div>
-              <button className="users-events-view-events-button">Ver eventos</button>
+              <button
+                className="users-events-view-events-button"
+                onClick={() => handleViewEventsClick(user.id)}
+              >
+                Ver eventos
+              </button>
             </div>
           ))}
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EventsService from '../../service/event.service'; 
-import { Userinfo } from '../../types/UserInfo'; 
 import "./profile.css"
+import { useUserInfo } from '../../types/UserInfo';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -9,7 +9,8 @@ interface ProfileModalProps {
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
-  const [profileUsername, setProfileUsername] = useState(Userinfo.username || "");
+  const { userInfo } = useUserInfo();
+  const [profileUsername, setProfileUsername] = useState(userInfo.username || "");
   const [profileEmail, setProfileEmail] = useState("");
   const [profilePassword, setProfilePassword] = useState("");
   const [profileMessage, setProfileMessage] = useState<string | null>(null);
@@ -22,28 +23,28 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       setProfileMessage(null);
       setProfileError(null);
 
-      if (Userinfo.token && Userinfo.userId) {
-        EventsService.aGetUsers(Userinfo.token).then((usersResponse: any) => {
+      if (userInfo.token && userInfo.userId) {
+        EventsService.aGetUsers(userInfo.token).then((usersResponse: any) => {
           let user = null;
           const usersArray = Array.isArray(usersResponse?.data) ? usersResponse.data : (Array.isArray(usersResponse) ? usersResponse : []);
           
-          user = usersArray.find((u: any) => u.id?.toString() === Userinfo.userId);
+          user = usersArray.find((u: any) => u.id?.toString() === userInfo.userId);
 
           if (user) {
-            setProfileUsername(user.username || Userinfo.username || "");
+            setProfileUsername(user.username || userInfo.username || "");
             setProfileEmail(user.email || "");
           } else {
-            setProfileUsername(Userinfo.username || "");
+            setProfileUsername(userInfo.username || "");
             console.warn("User details not found via API, using locally stored username.");
           }
         }).catch(err => {
           console.error("Error fetching user details for profile:", err);
-          setProfileUsername(Userinfo.username || "");
+          setProfileUsername(userInfo.username || "");
           setProfileError("Could not load current user details. Using available information.");
         });
       } else {
   
-        setProfileUsername(Userinfo.username || "");
+        setProfileUsername(userInfo.username || "");
         setProfileError("Not authenticated. Cannot fetch full profile details.");
       }
     }
@@ -55,7 +56,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     setProfileError(null);
     setProfileLoading(true);
 
-    if (!Userinfo.token || !Userinfo.userId) {
+    if (!userInfo.token || !userInfo.userId) {
       setProfileError("Authentication details are missing. Please log in again.");
       setProfileLoading(false);
       return;
@@ -71,13 +72,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     }
 
     try {
-      await EventsService.aUpdateUser(Userinfo.token, Userinfo.userId, updateData);
+      await EventsService.aUpdateUser(userInfo.token, userInfo.userId, updateData);
       setProfileMessage("Profile updated successfully.");
       setProfilePassword(""); 
 
-      if (Userinfo.username !== profileUsername) {
+      if (userInfo.username !== profileUsername) {
         localStorage.setItem("username", profileUsername);
-        Userinfo.username = profileUsername; 
+        userInfo.username = profileUsername; 
       }
 
      setTimeout(() => {
