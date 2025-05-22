@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import EventsService from '../../service/event.service';
 import "./profile.css";
-import { useUserInfo } from '../../types/UserInfo'; // Assuming this provides { userInfo, setUserInfo } or similar
+import { useUserInfo } from '../../types/UserInfo';
+import { useNavigate } from 'react-router-dom';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -9,78 +10,58 @@ interface ProfileModalProps {
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
-  // If useUserInfo provides a setter, destructure it.
-  // For this example, I'll assume it might not, and we'll focus on localStorage
-  // and the API refetch. If it did, e.g., { userInfo, updateUserInfo }, you'd call updateUserInfo.
-  const { userInfo } = useUserInfo();
-
-  // Initialize state from userInfo, but useEffect will be the primary source on open
+  const { userInfo, refreshUserInfo } = useUserInfo();
   const [profileUsername, setProfileUsername] = useState(userInfo.username || "");
-  const [profileEmail, setProfileEmail] = useState(""); // Will be fetched
+  const [profileEmail, setProfileEmail] = useState("");
   const [profilePassword, setProfilePassword] = useState("");
   const [profileMessage, setProfileMessage] = useState<string | null>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (isOpen) {
-      // Reset form state specific to an update attempt
       setProfilePassword("");
       setProfileMessage(null);
       setProfileError(null);
 
-      // Set initial values from current userInfo (which might be stale if useUserInfo hasn't updated yet)
-      // The API call below is intended to overwrite these with the freshest data.
+      // Pre-fill username from context immediately
       setProfileUsername(userInfo.username || "");
-      // setProfileEmail(""); // Clear email initially, or use userInfo.email if available
-
+      // Then try to fetch more details if authenticated
       if (userInfo.token && userInfo.userId) {
-        // It's good practice to indicate loading for this fetch too if it's noticeable
-        // For simplicity, we'll use the existing profileLoading for the submit button.
-        EventsService.aGetUsers(userInfo.token)
-          .then((usersResponse: any) => {
-            let user = null;
-            const usersArray = Array.isArray(usersResponse?.data)
-              ? usersResponse.data
-              : Array.isArray(usersResponse)
-              ? usersResponse
-              : [];
+        EventsService.aGetUsers(userInfo.token).then((usersResponse: any) => {
+          let user = null;
+          // Ensure usersResponse.data is an array, or usersResponse itself if data isn't present
+          const usersArray = Array.isArray(usersResponse?.data) ? usersResponse.data : (Array.isArray(usersResponse) ? usersResponse : []);
+          
+          user = usersArray.find((u: any) => u.id?.toString() === userInfo.userId);
 
-            user = usersArray.find(
-              (u: any) => u.id?.toString() === userInfo.userId
-            );
-
-            if (user) {
-              setProfileUsername(user.username || ""); // Prioritize API data, fallback to empty
-              setProfileEmail(user.email || "");     // Prioritize API data, fallback to empty
-            } else {
-              // User not found via API, this is problematic.
-              // Keep the username from userInfo as a last resort.
-              setProfileUsername(userInfo.username || "");
-              setProfileEmail(""); // No reliable source for email if user not found
-              console.warn(
-                "User details not found via API, using locally stored username (may be stale if update just occurred)."
-              );
-              setProfileError("Could not fully refresh profile from server.");
-            }
-          })
-          .catch((err) => {
-            console.error("Error fetching user details for profile:", err);
-            // On error, fall back to what we have in userInfo
+          if (user) {
+            setProfileUsername(user.username || userInfo.username || "");
+            setProfileEmail(user.email || "");
+          } else {
+            // If user not found by ID (shouldn't happen if ID is correct and user exists)
+            // Fallback to context username, email might be unavailable
             setProfileUsername(userInfo.username || "");
-            setProfileEmail(""); // Or userInfo.email if you want to show potentially stale email
-            setProfileError(
-              "Could not load current user details. Using available information."
-            );
-          });
+            setProfileEmail(""); // Or try to get it from userInfo if it exists there
+            console.warn("User details not found via API for the current userId, using locally stored username.");
+          }
+        }).catch(err => {
+          console.error("Error fetching user details for profile:", err);
+          setProfileUsername(userInfo.username || ""); // Fallback
+          setProfileEmail(""); // Fallback
+          // Provide a user-facing error if desired, e.g.:
+          // setProfileError("Could not load full profile details. Some information may be unavailable.");
+        });
       } else {
-        // Not authenticated or missing details
-        setProfileUsername(userInfo.username || ""); // Show whatever username we have (e.g., from localStorage via userInfo)
-        setProfileEmail(""); // Can't get email if not authenticated
-        setProfileError("Not authenticated. Cannot fetch full profile details.");
+        setProfileUsername(userInfo.username || "");
+        setProfileEmail(""); // Email likely unavailable if not authenticated to fetch
+        // Optionally set an error if profile is opened without auth
+        // setProfileError("Not authenticated. Cannot fetch full profile details.");
       }
     }
-  }, [isOpen, userInfo.token, userInfo.userId, userInfo.username]); // Key dependencies
+  }, [isOpen, userInfo.token, userInfo.userId, userInfo.username]); // Added userInfo.username to deps for consistency
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,35 +84,45 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
       updateData.password = profilePassword;
     }
 
+    console.log("Enviando datos de actualización:", updateData);
+
     try {
       await EventsService.aUpdateUser(userInfo.token, userInfo.userId, updateData);
       setProfileMessage("Profile updated successfully.");
-      setProfilePassword(""); // Clear password field
+      setProfilePassword("");
 
-      // If username changed, update localStorage.
-      // useUserInfo hook should ideally react to localStorage changes or provide a setter.
-      if (userInfo.username !== profileUsername) {
-        localStorage.setItem("username", profileUsername);
-        // IMPORTANT: If useUserInfo provides a setter function like `updateUserInfo` or `setUserInfo`
-        // you MUST call it here to update the global state.
-        // e.g., updateUserInfo({ ...userInfo, username: profileUsername });
-        // Without this, `userInfo` in the next render cycle (when modal reopens) might still be stale
-        // until a full page refresh or if `useUserInfo` itself listens to localStorage.
+      const oldUsername = userInfo.username;
+      await refreshUserInfo(); // This should update userInfo in the context
+
+      // Check if username actually changed after refreshUserInfo()
+      // refreshUserInfo might be asynchronous and userInfo might not be updated immediately here
+      // It's safer to compare profileUsername with oldUsername
+      if (oldUsername !== profileUsername) {
+        // If username changed, the token might be associated with the old username
+        // or some downstream systems might rely on the username in localStorage.
+        // Clearing localStorage and redirecting to home is a common pattern for re-auth.
+        localStorage.clear(); // Or more selectively: localStorage.removeItem('token'), localStorage.removeItem('userId'), etc.
+        navigate("/");
+        // No need to call onClose as the component might unmount due to navigation
+        // However, if navigation doesn't cause unmount or if you want to ensure modal is closed:
+        // onClose();
+      } else {
+        // If username didn't change, just close the modal after a delay
+        setTimeout(() => {
+          onClose();
+        }, 1500);
       }
-      // Similarly for email if it's part of global userInfo state
-      // if (userInfo.email !== profileEmail && typeof updateUserInfo === 'function') {
-      //   updateUserInfo({ ...userInfo, email: profileEmail });
-      //   localStorage.setItem("email", profileEmail); // If you store email in localStorage too
-      // }
 
-
-      setTimeout(() => {
-        onClose(); // This will trigger the useEffect again because `isOpen` changes
-      }, 1500);
     } catch (err: any) {
-      setProfileError(
-        err?.response?.data?.message || err.message || "Error updating profile."
-      );
+      if (err.response && err.response.status === 401) {
+        setProfileError("Authentication failed. Your session may have expired or your credentials are no longer valid.or value is already taken.");
+      } else {
+        // Try to get a message from the server's response
+        const serverMessage = err.response?.data?.message;
+        // Otherwise, use a generic message or the error object's message
+        setProfileError(serverMessage || "Failed to update profile. Please check the provided data or try again later.");
+      }
+      console.error("Error updating profile:", err);
     } finally {
       setProfileLoading(false);
     }
@@ -158,13 +149,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
           ×
         </button>
         <h2>Profile</h2>
-        {profileMessage && (
-          <div className="profile-modal-message success">{profileMessage}</div>
-        )}
-        {profileError && (
-          <div className="profile-modal-message error">{profileError}</div>
-        )}
-
+        {profileMessage && <div className="profile-modal-message success">{profileMessage}</div>}
+        {profileError && <div className="profile-modal-message error">{profileError}</div>}
+        
         <label htmlFor="profileUsernameModal">Username</label>
         <input
           id="profileUsernameModal"
@@ -173,7 +160,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
           onChange={(e) => setProfileUsername(e.target.value)}
           required
         />
-
+        
         <label htmlFor="profileEmailModal">Email</label>
         <input
           id="profileEmailModal"
@@ -182,7 +169,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
           onChange={(e) => setProfileEmail(e.target.value)}
           required
         />
-
+        
         <label htmlFor="profilePasswordModal">New Password</label>
         <input
           id="profilePasswordModal"
@@ -191,12 +178,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
           onChange={(e) => setProfilePassword(e.target.value)}
           placeholder="Leave blank to keep current"
         />
-
-        <button
-          type="submit"
-          className="profile-modal-submit-btn"
-          disabled={profileLoading}
-        >
+        
+        <button type="submit" className="profile-modal-submit-btn" disabled={profileLoading}>
           {profileLoading ? "Updating..." : "Update Profile"}
         </button>
       </form>
