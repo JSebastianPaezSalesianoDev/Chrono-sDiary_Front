@@ -13,12 +13,12 @@ const Login = () => {
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
-    setErrorMessage(null);
+    setErrorMessage(null); 
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-    setErrorMessage(null);
+    setErrorMessage(null); 
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -34,11 +34,10 @@ const Login = () => {
       const userId = localStorage.getItem("userId");
 
       if (!token || !userId) {
-         throw new Error("Authentication information missing after login.");
+         throw new Error("Falta información de autenticación después del inicio de sesión.");
       }
 
       const userDetailsResponse = await EventsService.aGetUserById(token, userId);
-
       const userData = userDetailsResponse.data;
 
       let isAdmin = false;
@@ -53,8 +52,27 @@ const Login = () => {
       }
 
     } catch (error: any) {
-      console.error("Login or user data fetch failed:", error);
-      setErrorMessage(error.message || "Error al iniciar sesión. Verifica tus credenciales.");
+      console.error("Fallo en el inicio de sesión o en la obtención de datos del usuario:", error);
+
+  
+      if (error.response) {
+
+        if (error.response.status === 401) {
+          setErrorMessage("Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.");
+        } else if (error.response.data && error.response.data.message) {
+
+          setErrorMessage(error.response.data.message);
+        } else {
+  
+          setErrorMessage(`Error del servidor: ${error.response.status}. Inténtalo más tarde.`);
+        }
+      } else if (error.request) {
+       
+        setErrorMessage("No se pudo conectar con el servidor. Revisa tu conexión a internet.");
+      } else {
+
+        setErrorMessage(error.message || "Error al iniciar sesión. Verifica tus credenciales o inténtalo más tarde.");
+      }
     } finally {
       setLoading(false);
     }
@@ -75,6 +93,7 @@ const Login = () => {
             value={username}
             onChange={handleUsernameChange}
             disabled={loading}
+            required 
           />
         </div>
 
@@ -87,13 +106,14 @@ const Login = () => {
             value={password}
             onChange={handlePasswordChange}
             disabled={loading}
+            required 
           />
         </div>
 
         {errorMessage && <p className="error-message" style={{ color: 'red', marginBottom: '15px' }}>{errorMessage}</p>}
 
         <div className="form-actions">
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading || !username || !password}> 
             {loading ? "Iniciando Sesión..." : "Iniciar Sesión"}
           </button>
         </div>

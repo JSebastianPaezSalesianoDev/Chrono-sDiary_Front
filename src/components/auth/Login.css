@@ -105,30 +105,41 @@
     margin-bottom: 15px;
     border-radius: 4px;
     text-align: center;
-  }
-  
-  .message.success {
+}
+
+.message.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
-  }
-  
-  .message.error {
+}
+
+.message.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
-  }
+}
 
-  .forgot-password-link{
-        margin-top: 14px;
+.forgot-password-link {
+    margin-top: 14px;
     text-align: center;
-  }
+}
 
-  .link-text{
-        display: flex
-;
+.link-text {
+    display: flex;
     flex-direction: column;
     gap: 5px;
 
     margin-bottom: 10px;
-  }
+}
+
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+}

@@ -60,10 +60,10 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
   };
 
   const handleInvitationAction = async (invitation: InvitationResponse, newStatus: InvitationStatus) => {
-    if (!Userinfo.token) return;
+    if (!userInfo.token) return;
     try {
       await EventsService.aUpdateInvitationStatus(
-        Userinfo.token,
+        userInfo.token,
         invitation.id,
         invitation.eventId,
         invitation.userId,

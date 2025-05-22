@@ -2,71 +2,76 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.35);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999;
-} 
+}
+
 
 .event-modal {
-    /* position: fixed; */
-    /* top: 50%; */
-    left: 50%;
-    transform: translate(-50%, -89%);
-    position: relative;
-    background-color: #ffffff;
-    padding: 0.5rem 1rem 0.5rem 2rem;
+    position: fixed; 
+    top: 50%;        
+    left: 50%;      
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 2rem 2rem 1.5rem 2rem;
     border: 1px solid #dcdcdc;
     border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     z-index: 1000;
     width: 90%;
     max-width: 450px;
     font-family: sans-serif;
     color: #333;
+    margin: 0 auto;
 }
 
+/* Botón de cerrar */
 .close-event-modal {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 14px;
+    right: 14px;
     background: none;
     border: none;
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: #888;
     cursor: pointer;
+    z-index: 2;
 }
 .close-event-modal:hover {
     color: #333;
 }
 
-
+/* Título del modal */
 .modal-title {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 600;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     color: #555;
-
 }
 
+/* Secciones del formulario */
 .modal-section {
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
 }
 
 .modal-section label {
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.97rem;
     font-weight: 600;
     color: #666;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
-
+/* Inputs y textarea */
 .modal-section input[type="text"],
+.modal-section input[type="date"],
+.modal-section input[type="time"],
 .modal-section textarea {
     width: 100%;
     border: none;
@@ -75,19 +80,21 @@
     font-size: 1rem;
     background-color: transparent;
     outline: none;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s;
+    margin-bottom: 0.1rem;
 }
 .modal-section input[type="text"]:focus,
+.modal-section input[type="date"]:focus,
+.modal-section input[type="time"]:focus,
 .modal-section textarea:focus {
     border-bottom-color: #a4d9f6;
 }
 
-.modal-section input::placeholder {
+.modal-section input::placeholder,
+.modal-section textarea::placeholder {
     color: #a0c9e3;
     opacity: 1;
 }
-
-
 
 .modal-section textarea {
     border: 1px solid #ccc;
@@ -96,46 +103,54 @@
     padding: 0.8rem;
     resize: vertical;
     min-height: 80px;
+    margin-top: 0.2rem;
 }
 .modal-section textarea:focus {
     border-color: #ffd9d9;
     background-color: #fff0f2;
 }
 
+/* Grid para inputs de hora */
+.modal-grid-half {
+    display: flex;
+    gap: 1.2rem;
+}
+.modal-grid-half .modal-section {
+    flex: 1;
+    margin-bottom: 0;
+}
 
-/*campos del modal con iconos*/
+/* Campos con iconos */
 .modal-field-with-icon {
     display: flex;
     align-items: center;
     gap: 0.8rem;
     border-bottom: 1px solid #ccc;
     padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
 }
 .modal-field-with-icon i {
     font-size: 1.4rem;
     color: #010101;
 }
-.modal-field-with-icon span {
-    font-size: 1rem;
-    color: #000000;
-}
 .modal-field-with-icon input[type="text"] {
     border: none;
     flex-grow: 1;
     padding: 0.2rem 0;
+    margin-bottom: 0;
 }
 .modal-field-with-icon input[type="text"]:focus {
     border-bottom-color: transparent;
 }
 
-
-/* seccion de invitar  */
+/* Sección de invitar */
 .invite-input-group {
     display: flex;
     align-items: center;
     gap: 0.8rem;
     border-bottom: 1px solid #ccc;
     padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
 }
 .invite-input-group i {
     font-size: 1.6rem;
@@ -145,24 +160,10 @@
     flex-grow: 1;
     border: none;
     padding: 0.4rem 0;
-}
-.invite-button {
-    background-color: #a4d9f6;
-    border: 1px solid #8bb9d4;
-    color: #334;
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
-    flex-shrink: 0;
-}
-.invite-button:hover {
-    background-color: #92c4e0;
+    margin-bottom: 0;
 }
 
-/*seccion del creador(dueño) */
+/* Sección del dueño */
 .owner-section label {
     margin-bottom: 0.2rem;
 }
@@ -171,7 +172,7 @@
     color: #4682b4;
 }
 
-/* enviar boton */
+/* Botón de enviar */
 .modal-actions {
     text-align: right;
     margin-top: 2rem;
@@ -186,9 +187,33 @@
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s, border-color 0.2s;
 }
 .submit-button:hover {
     background-color: #92c4e0;
     border-color: #f3a030;
 }
+
+
+
+
+.modal-error {
+  color: red;
+  background-color: #ffe6e6;
+  border: 1px solid red;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.modal-success {
+  color: green;
+  background-color: #e6ffe6;
+  border: 1px solid green;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+

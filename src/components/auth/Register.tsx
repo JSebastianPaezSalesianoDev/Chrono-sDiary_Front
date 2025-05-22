@@ -33,7 +33,16 @@ const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
             navigate("/"); 
 
         } catch (error: any) {
-            setMessage(error.message || "Registration failed.");
+            // Manejo de errores específicos
+            if (error?.message?.toLowerCase().includes("username") && error?.message?.toLowerCase().includes("exist")) {
+                setMessage("El usuario ya existe. Por favor, elige otro nombre de usuario.");
+            } else if (error?.message?.toLowerCase().includes("email") && error?.message?.toLowerCase().includes("exist")) {
+                setMessage("El correo electrónico ya está registrado.");
+            } else if (error?.message?.toLowerCase().includes("password")) {
+                setMessage("La contraseña no cumple con los requisitos.");
+            } else {
+                setMessage(error.message || "Registration failed.");
+            }
             setIsError(true);
         }
     };
