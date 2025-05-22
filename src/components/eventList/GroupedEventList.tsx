@@ -3,7 +3,6 @@ import { format, parseISO } from "date-fns";
 import EventsService from "../../service/event.service";
 import "./EventGroupedList.css";
 import { useUserInfo } from '../../types/UserInfo';
-
 import { useParams, useNavigate } from 'react-router-dom';
 
 type Event = {
@@ -20,22 +19,17 @@ const GroupedEventList = () => {
   const [error, setError] = useState<string | null>(null);
   const [viewingUsername, setViewingUsername] = useState<string | null>(null);
 
-  const { userInfo, userRole } = useUserInfo();
-
-  const { userId: targetUserId } = useParams<{ userId: string }>();
-
+  const { userInfo } = useUserInfo();
+  const { userId: targetUserIdParam } = useParams<{ userId?: string }>();
   const navigate = useNavigate();
+
+  const targetUserId = targetUserIdParam || userInfo.userId;
 
   useEffect(() => {
     const fetchUserDataAndEvents = async () => {
       const loggedInUserToken = userInfo.token;
-      let userIdToFetch = targetUserId;
-      
-      if (!userRole?.isAdmin) {
-        userIdToFetch = localStorage.getItem("userId") || userInfo.userId;
-      }
 
-      if (!loggedInUserToken || !userIdToFetch) {
+      if (!loggedInUserToken || !targetUserId) {
         setError("Authentication token or target user ID missing.");
         setLoading(false);
         return;
@@ -46,29 +40,24 @@ const GroupedEventList = () => {
       setViewingUsername(null);
 
       try {
-        if (userIdToFetch === userInfo.userId) {
+        if (targetUserId === userInfo.userId) {
           setViewingUsername(userInfo.username);
-        } else if (userRole?.isAdmin) {
-          const storedViewedUsername = localStorage.getItem('viewedUsername');
-          if (storedViewedUsername) {
-            setViewingUsername(storedViewedUsername);
-          } else {
-            try {
-              const userDetailsResponse = await EventsService.aGetUserById(loggedInUserToken, userIdToFetch);
-              if (userDetailsResponse && userDetailsResponse.username) {
-                setViewingUsername(userDetailsResponse.username);
-              } else {
-                setViewingUsername("Unknown User");
-              }
-            } catch (userFetchError) {
-              setViewingUsername("Error fetching user name");
-            }
-          }
         } else {
-          setViewingUsername(userInfo.username);
+          try {
+            const userDetailsResponse = await EventsService.aGetUserById(loggedInUserToken, targetUserId);
+            if (userDetailsResponse && userDetailsResponse.data?.username) {
+              setViewingUsername(userDetailsResponse.data.username);
+            } else {
+              console.warn("Could not fetch username for target user:", targetUserId, userDetailsResponse);
+              setViewingUsername("Unknown User");
+            }
+          } catch (userFetchError) {
+            console.error("Error fetching target user details:", userFetchError);
+            setViewingUsername("Error fetching user name");
+          }
         }
 
-        const eventsResponse = await EventsService.aGetEventsById(loggedInUserToken, userIdToFetch);
+        const eventsResponse = await EventsService.aGetEventsById(loggedInUserToken, targetUserId);
 
         if (eventsResponse && Array.isArray(eventsResponse.data)) {
           setEvents(eventsResponse.data);
@@ -78,6 +67,7 @@ const GroupedEventList = () => {
         }
 
       } catch (error: any) {
+        console.error("Error fetching events:", error);
         setError(error.response?.data?.message || error.message || "Error al cargar eventos.");
         setEvents([]);
         setViewingUsername(null);
@@ -88,11 +78,7 @@ const GroupedEventList = () => {
 
     fetchUserDataAndEvents();
 
-    return () => {
-      localStorage.removeItem('viewedUsername');
-    };
-
-  }, [userInfo.token, userInfo.userId, userRole, targetUserId]);
+  }, [userInfo.token, userInfo.userId, targetUserId]);
 
   const groupedEvents = events.reduce<Record<string, Event[]>>((acc, event) => {
     try {
@@ -106,6 +92,7 @@ const GroupedEventList = () => {
   }, {});
 
   const sortedDates = Object.keys(groupedEvents).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  const isViewingOwnEvents = targetUserId === userInfo.userId;
 
   const handleDelete = async (eventId: string) => {
     if (!userInfo.token) {
@@ -121,20 +108,13 @@ const GroupedEventList = () => {
     }
   };
 
-  const isViewingOwnEvents = targetUserId === userInfo.userId;
-
   return (
     <div className="event-page">
       <div className="event-header">
         <h1>EVENTS</h1>
       </div>
       <div className="controls-container">
-        <button
-          className="back-button"
-          onClick={() => navigate(-1)}
-        >
-          ⬅ Ir atrás
-        </button>
+        <button className="back-button" onClick={() => navigate(-1)}>⬅ Ir atrás</button>
       </div>
       <h2 className="event-subtitle">
         {viewingUsername ? `${viewingUsername}’s Events` : (isViewingOwnEvents ? 'My Events' : 'User Events')}
@@ -166,10 +146,7 @@ const GroupedEventList = () => {
                   </p>
                 </div>
                 {isViewingOwnEvents && (
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDelete(event.id)}
-                  >
+                  <button className="delete-button" onClick={() => handleDelete(event.id)}>
                     🗑
                   </button>
                 )}
