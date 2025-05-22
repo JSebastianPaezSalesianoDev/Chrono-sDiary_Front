@@ -128,6 +128,38 @@ body {
 }
 
 
+.user-actions-icon-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 8px;
+  margin-top: 0.5rem;
+  margin-bottom: -0.2rem;
+}
+
+.user-actions-dropdown {
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.edit, .delete {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-btn:hover {
+  background-color: #cce5ff;
+}
+
+.delete-btn:hover {
+  background-color: #ffcccc;
+}
 
 @media (max-width: 600px) {
   .users-events-title-text {
@@ -161,4 +193,3 @@ body {
 .back-button:hover {
   background-color: #FFD34E;
   transform: translateY(-2px);
-}

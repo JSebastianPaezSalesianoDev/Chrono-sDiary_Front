@@ -13,7 +13,7 @@ const aAuthLogin = async (username: string, password: string) => {
         localStorage.setItem("userId", response.data.id);
         localStorage.setItem("username", response.data.username)
     } else {
-        alert("Error en autenticación");
+        alert("Error en autenticaciÃ³n");
     }
     return response.data;
 };
@@ -174,6 +174,21 @@ const aGetUserById = async (token: string, userId: string) => {
     });
     return response.data;
 }
+
+const aDeleteUser = async (token: string, userId: string) => {
+    try {
+        const response = await axios.delete(`${API_URL}users/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        throw error;
+    }
+};
+
 const EventsService = {
     aAuthLogin,
     aGetEventsById,
@@ -187,7 +202,8 @@ const EventsService = {
     aUpdateInvitationStatus,
     aUpdateUser,
     aGetUserById,
-    aResetPassword
+    aResetPassword,
+    aDeleteUser
 };
 
 export default EventsService;
