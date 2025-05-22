@@ -98,7 +98,7 @@ const aRegisterUser = async (userRequestDto: { username: string; email: string; 
         return response.data;
     } catch (error: any) {
         console.error("error:", error);
-        throw error.response?.data || { message: "Error." };
+        throw error;
     }
 };
 
