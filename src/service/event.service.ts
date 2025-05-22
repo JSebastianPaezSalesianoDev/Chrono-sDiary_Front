@@ -153,6 +153,14 @@ const aUpdateUser = async (
     return response.data;
 };
 
+const aGetUserById = async (token: string, userId: string) => {
+    const response = await axios.get(`${API_URL}users/${userId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+}
 const EventsService = {
     aAuthLogin,
     aGetEventsById,
@@ -165,6 +173,7 @@ const EventsService = {
     aGetUserInvitations,
     aUpdateInvitationStatus,
     aUpdateUser,
+    aGetUserById
 };
 
 export default EventsService;

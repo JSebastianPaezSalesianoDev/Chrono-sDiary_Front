@@ -9,6 +9,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import GroupedEventList from './components/eventList/GroupedEventList';
 import EventList from './components/eventList/EvenList';
 import AllUserEvents from './components/allUsers/AllUserEvents';
+import ForgotPassword from './components/auth/ForgotPw';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,17 +18,20 @@ function App() {
     <>
       <BrowserRouter>
 
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/Register" element={<Register/>}></Route>
-        <Route element={<ProtectedRoute/>}>
-          <Route path="/calendar" element={<Calendar />} /> {/* Ruta protegida */}
-          <Route path="/AllEvents" element={<GroupedEventList />} /> {/* Ruta protegida */}
-          <Route path="/AllUserEvents" element={<AllUserEvents />} /> {/* Ruta protegida */}
-        </Route>
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
+          <Route path="/ForgotPassword" element={<ForgotPassword />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/AllEvents" element={<GroupedEventList />} />
+            <Route path="/AllUserEvents" element={<AllUserEvents />} />
+            <Route path="/events/:userId" element={<GroupedEventList />} />
+          </Route>
+        </Routes>
       </BrowserRouter>
     </>
+
   )
 }
 

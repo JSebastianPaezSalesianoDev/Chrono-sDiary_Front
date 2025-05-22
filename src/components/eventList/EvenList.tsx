@@ -3,7 +3,7 @@ import "./eventList.css";
 import EventsService, { InvitationResponse, InvitationStatus } from "../../service/event.service";
 import { format, isSameDay } from 'date-fns';
 import { useNavigate } from "react-router-dom";
-import { Userinfo } from "../../types/UserInfo";
+import { useUserInfo } from "../../types/UserInfo";
 
 type EventListProps = {
   onOpenCreateModal: () => void;
@@ -24,18 +24,19 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
   const [pendingInvitations, setPendingInvitations] = useState<InvitationResponse[]>([]);
   const [showNotificationsDropdown, setShowNotificationsDropdown] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
+  const { userInfo } = useUserInfo();
   const navigate = useNavigate();
 
   const fetchUserEventsAndInvitations = async () => {
-    if (!Userinfo.token || !Userinfo.userId) {
+    if (!userInfo.token || !userInfo.userId) {
       console.error("No hay token o userId en localStorage.");
       return;
     }
     try {
-      const eventsResponse = await EventsService.aGetEventsById(Userinfo.token, Userinfo.userId);
+      const eventsResponse = await EventsService.aGetEventsById(userInfo.token, userInfo.userId);
       setUserEvents(eventsResponse.data.map((evt: any) => ({ ...evt, id: evt.id?.toString() || Math.random().toString() })) || []);
 
-      const invitationsResponse = await EventsService.aGetUserInvitations(Userinfo.token, Userinfo.userId);
+      const invitationsResponse = await EventsService.aGetUserInvitations(userInfo.token, userInfo.userId);
       const invitations = Array.isArray(invitationsResponse)
         ? invitationsResponse
         : invitationsResponse?.data || [];

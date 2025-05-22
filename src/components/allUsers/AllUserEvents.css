@@ -91,6 +91,13 @@ body {
   align-items: center;
   text-align: center;
 }
+.edit-user-icon{
+      margin-inline: 8px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: red;
+}
+
 
 .users-events-username-label {
   background-color: #d3b8ae;
@@ -136,4 +143,22 @@ body {
   .users-events-user-card {
     padding: 20px 15px;
   }
+}
+.back-button {
+  background-color: #FFDD74;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.back-button:hover {
+  background-color: #FFD34E;
+  transform: translateY(-2px);
 }

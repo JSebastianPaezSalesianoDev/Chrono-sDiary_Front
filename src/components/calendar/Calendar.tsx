@@ -3,7 +3,7 @@ import "./CalendarApp.css";
 import EventModal from '../createEvent/CreateEvent';
 import EventList from '../eventList/EvenList';
 import EventsService from '../../service/event.service';
-import { Userinfo } from '../../types/UserInfo';
+import { useUserInfo as Userinfo} from '../../types/UserInfo';
 import ProfileModal from '../profile/profile';
 
 

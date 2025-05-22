@@ -1,71 +1,110 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import EventsService from "../../service/event.service";
-import { useNavigate } from "react-router-dom";
-import Calendar from "../calendar/Calendar";
-
 
 const Login = () => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+    setErrorMessage(null);
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+    setErrorMessage(null);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setLoading(true);
+    setErrorMessage(null);
+
     try {
-      const { accessToken } = await EventsService.aAuthLogin(username, password);
-      
-  
-      if (accessToken) {
-        localStorage.setItem("authToken", accessToken);
-        navigate("/calendar"); 
-        console.log("Token de acceso guardado:", accessToken);
-      } else {
-        alert("Error en autenticación");
-        console.log("token:", accessToken);
+      await EventsService.aAuthLogin(username, password);
+
+      const token = localStorage.getItem("authToken");
+      const userId = localStorage.getItem("userId");
+
+      if (!token || !userId) {
+         throw new Error("Authentication information missing after login.");
       }
-    } catch (error) {
-      alert("Credenciales incorrectas");
+
+      const userDetailsResponse = await EventsService.aGetUserById(token, userId);
+
+      const userData = userDetailsResponse.data;
+
+      let isAdmin = false;
+      if (userData && userData.roles && Array.isArray(userData.roles)) {
+         isAdmin = userData.roles.some(role => role.name === "ADMIN");
+      }
+
+      if (isAdmin) {
+        navigate("/AllUserEvents");
+      } else {
+        navigate("/calendar");
+      }
+
+    } catch (error: any) {
+      console.error("Login or user data fetch failed:", error);
+      setErrorMessage(error.message || "Error al iniciar sesión. Verifica tus credenciales.");
+    } finally {
+      setLoading(false);
     }
   };
 
-
   return (
     <div className="login-container">
-      <h1 className="login-title">Chrono's Diary</h1>
-      <form className="login-form" onSubmit={(e) => e.preventDefault()}>
+      <h1 className="login-title">Iniciar Sesión</h1>
+
+      <form className="login-form" onSubmit={handleSubmit}>
+
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">Usuario</label>
           <input
             id="username"
             type="text"
+            placeholder="Introduce tu usuario"
             value={username}
-            placeholder="Username"
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleUsernameChange}
+            disabled={loading}
           />
         </div>
+
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Contraseña</label>
           <input
             id="password"
             type="password"
+            placeholder="Introduce tu contraseña"
             value={password}
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            onChange={handlePasswordChange}
+            disabled={loading}
           />
         </div>
+
+        {errorMessage && <p className="error-message" style={{ color: 'red', marginBottom: '15px' }}>{errorMessage}</p>}
+
         <div className="form-actions">
-          <button type="submit" onClick={handleLogin}>
-            Login
+          <button type="submit" disabled={loading}>
+            {loading ? "Iniciando Sesión..." : "Iniciar Sesión"}
           </button>
-          <a href="#" className="forgot-password">
-            Forgot Password?
-          </a>
         </div>
+
+        <div className="forgot-password-link">
+           <p><a href="/ForgotPassword">¿Olvidaste tu contraseña?</a></p>
+        </div>
+
         <div className="signup-link">
           <p>
-            Don’t have an account? <a onClick={()=> navigate("/Register")}>Sign Up</a>
+            ¿No tienes una cuenta? <a href="/Register">Registrarse</a>
           </p>
         </div>
       </form>
