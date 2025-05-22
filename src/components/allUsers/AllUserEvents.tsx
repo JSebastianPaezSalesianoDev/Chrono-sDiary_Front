@@ -17,6 +17,7 @@ const AllUsersEvents = () => {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+
   const fetchAndLogUserById = async (id: string, token: string) => {
     try {
       const user = await EventsService.aGetUserById(token, id);

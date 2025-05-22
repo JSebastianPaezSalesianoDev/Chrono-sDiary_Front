@@ -64,6 +64,8 @@ body {
   font-size: 1.6rem;
   color: #5a4d1d;
   font-weight: 600;
+  min-width: 30rem;
+
 }
 
 .event-list {
@@ -166,3 +168,4 @@ body {
 .event-list::-webkit-scrollbar-thumb:hover {
   background-color: #FFD34E;
 }
+

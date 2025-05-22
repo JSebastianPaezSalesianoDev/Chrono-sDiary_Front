@@ -110,8 +110,11 @@ const GroupedEventList = () => {
       {loading && <p>Cargando eventos...</p>}
       {error && <p className="modal-error">Error: {error}</p>}
       {!loading && !error && events.length === 0 && (
-        <p>{isViewingOwnEvents ? "No tienes eventos programados." : "No se encontraron eventos para este usuario."}</p>
+        <p style={{ textAlign: "center" }}>
+          {isViewingOwnEvents ? "No tienes eventos programados." : "No se encontraron eventos para este usuario."}
+        </p>
       )}
+
       <div className="event-list">
         {sortedDates.map((date) => (
           <div key={date} className="event-day-group">

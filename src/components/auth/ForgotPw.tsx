@@ -67,10 +67,10 @@ const ForgotPassword = () => {
         {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
 
         <div className="signup-link">
-          <p>
+          <p className="link-text">
             ¿Recordaste tu contraseña? <a href="#">Iniciar Sesión</a>
           </p>
-          <p>
+          <p className="link-text">
             ¿No tienes una cuenta? <a href="#">Registrarse</a>
           </p>
         </div>
