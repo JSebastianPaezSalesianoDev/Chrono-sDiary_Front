@@ -18,6 +18,19 @@ const aAuthLogin = async (username: string, password: string) => {
     return response.data;
 };
 
+const aResetPassword = async ( email: string) => {
+    const response = await axios.post(
+        `${API_URL}users/reset-password`,
+        { email: email },
+        {
+            headers: {
+               
+                "Content-Type": "application/json",
+            },
+        }
+    );
+    return response.data;
+}
 const aGetEventsById = async (token: string, userId: string) => {
     const response = await axios.get(`${API_URL}event/${userId}/event`, {
         headers: {
@@ -173,7 +186,8 @@ const EventsService = {
     aGetUserInvitations,
     aUpdateInvitationStatus,
     aUpdateUser,
-    aGetUserById
+    aGetUserById,
+    aResetPassword
 };
 
 export default EventsService;

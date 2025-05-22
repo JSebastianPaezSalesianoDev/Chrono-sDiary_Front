@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./Login.css";
 import EventsService from "../../service/event.service";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -68,10 +70,28 @@ const ForgotPassword = () => {
 
         <div className="signup-link">
           <p className="link-text">
-            ¿Recordaste tu contraseña? <a href="#">Iniciar Sesión</a>
+            ¿Recordaste tu contraseña?{" "}
+            <a
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                navigate("/");
+              }}
+            >
+              Iniciar Sesión
+            </a>
           </p>
           <p className="link-text">
-            ¿No tienes una cuenta? <a href="#">Registrarse</a>
+            ¿No tienes una cuenta?{" "}
+            <a
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                navigate("/register");
+              }}
+            >
+              Registrarse
+            </a>
           </p>
         </div>
       </form>
