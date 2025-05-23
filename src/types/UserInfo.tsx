@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import EventsService from "../service/event.service";
 
+// Hook para obtener y refrescar información del usuario
 export const useUserInfo = () => {
   const [userInfo, setUserInfo] = useState({
     token: localStorage.getItem("authToken"),
@@ -11,6 +12,7 @@ export const useUserInfo = () => {
   const [userData, setUserData] = useState<any | null>(null);
   const [loadingRole, setLoadingRole] = useState(true);
 
+  // Refresca la información del usuario
   const refreshUserInfo = () => {
     setUserInfo({
       token: localStorage.getItem("authToken"),
@@ -27,7 +29,6 @@ export const useUserInfo = () => {
           const data = await EventsService.aGetUserById(userInfo.token, userInfo.userId);
           setUserData(data);
         } catch (error) {
-          console.error("Error fetching user data:", error);
           setUserData(null);
         } finally {
           setLoadingRole(false);

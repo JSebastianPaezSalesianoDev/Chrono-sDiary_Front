@@ -3,6 +3,7 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import EventsService from "../../service/event.service";
 
+// Componente de registro de usuario
 const Register = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -11,6 +12,7 @@ const Register = () => {
   const [isError, setIsError] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  // Envía el formulario de registro
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage("");
@@ -38,8 +40,6 @@ const Register = () => {
  
 
     } catch (error: any) {
-        console.log("Error recibido en Register.tsx:", error); 
-    console.log("error.response en Register.tsx:", error.response); 
       setIsError(true); 
 
       if (error.response && error.response.status === 401) {

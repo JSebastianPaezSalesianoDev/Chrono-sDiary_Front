@@ -6,33 +6,20 @@ import EventsService from '../../service/event.service';
 import { useUserInfo as Userinfo} from '../../types/UserInfo';
 import ProfileModal from '../profile/profile';
 
-
-type Event = {
-  _id: string;
-  startTime: string;
-  endTime: string;
-  title: string;
-  date: string;
-};
-
-const refreshCalendarData = () => {
-  console.log("Calendar data refresh triggered");
-};
-
+// Componente principal de la aplicación de calendario
 const CalendarApp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date(2025, 6, 24));
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2025, 6, 24));
   const [showSettings, setShowSettings] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [userEvents, setUserEvents] = useState<any[]>([]);
 
-  const [userEvents, setUserEvents] = useState<Event[]>([]);
-
+  // Obtiene los eventos del usuario
   const fetchUserEvents = () => {
     Userinfo.token = localStorage.getItem("authToken");
     Userinfo.userId = localStorage.getItem("userId");
     if (!Userinfo.token || !Userinfo.userId) {
-      console.error("No hay token o userId en localStorage.");
       setUserEvents([]);
       return;
     }
@@ -40,8 +27,7 @@ const CalendarApp = () => {
       .then((response) => {
         setUserEvents(response.data || []);
       })
-      .catch((error) => {
-        console.error("Error fetching events:", error);
+      .catch(() => {
         setUserEvents([]);
       });
   };
@@ -80,23 +66,19 @@ const CalendarApp = () => {
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
   const monthNames = [
     "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
     "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
   ];
   const currentMonthName = monthNames[month];
-
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-
   const firstDayOfMonth = new Date(year, month, 1).getDay();
   const emptyDaysCount = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
   const emptyDaysArray = Array.from({ length: emptyDaysCount }, (_, i) => `empty-${i}`);
 
   return (
     <>
-      {/* botones tuerca y desplegabble */}
       <div className="settings-gear-container">
         <button
           className="settings-gear-btn"
@@ -133,18 +115,16 @@ const CalendarApp = () => {
           </div>
         )}
       </div>
-
       <ProfileModal
         isOpen={showProfile}
         onClose={() => setShowProfile(false)}
       />
-
       <div className="calendar-app">
         <div className="events-section-container">
           <EventList
             onOpenCreateModal={openModal}
             selectedDate={selectedDate}
-            refreshEvents={refreshCalendarData}
+            refreshEvents={() => {}}
           />
         </div>
         <div className="calendar-section">
@@ -192,7 +172,6 @@ const CalendarApp = () => {
           </div>
         </div>
       </div>
-
       <EventModal
         isOpen={isModalOpen}
         onClose={closeModal}

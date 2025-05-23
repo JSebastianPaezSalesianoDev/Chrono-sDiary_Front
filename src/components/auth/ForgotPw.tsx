@@ -3,6 +3,7 @@ import "./Login.css";
 import EventsService from "../../service/event.service";
 import { useNavigate } from "react-router-dom";
 
+// Componente para solicitar restablecimiento de contraseña
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -10,12 +11,14 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Maneja el cambio de email
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
     setError(null);
     setMessage(null);
   };
 
+  // Envía la solicitud de restablecimiento
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -33,9 +36,7 @@ const ForgotPassword = () => {
       setMessage(response.message || "Si el correo electrónico existe, se ha enviado un enlace de restablecimiento.");
       setEmail("");
     } catch (err: any) {
-      console.error("Password reset request failed:", err);
-      const errorMessage = err.message || "Error al solicitar el restablecimiento de contraseña.";
-      setError(errorMessage);
+      setError(err.message || "Error al solicitar el restablecimiento de contraseña.");
     } finally {
       setLoading(false);
     }
@@ -44,9 +45,7 @@ const ForgotPassword = () => {
   return (
     <div className="login-container">
       <h1 className="login-title">Restablecer Contraseña</h1>
-
       <form className="login-form" onSubmit={handleSubmit}>
-
         <div className="form-group">
           <label htmlFor="email">Correo electrónico</label>
           <input
@@ -58,16 +57,13 @@ const ForgotPassword = () => {
             disabled={loading}
           />
         </div>
-
         <div className="form-actions">
           <button type="submit" disabled={loading}>
             {loading ? "Enviando..." : "Enviar enlace de restablecimiento"}
           </button>
         </div>
-
         {message && <p className="success-message" style={{ color: 'green' }}>{message}</p>}
         {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
-
         <div className="signup-link">
           <p className="link-text">
             ¿Recordaste tu contraseña?{" "}

@@ -5,20 +5,7 @@ import { format, isSameDay } from 'date-fns';
 import { useNavigate } from "react-router-dom";
 import { useUserInfo } from "../../types/UserInfo";
 
-type EventListProps = {
-  onOpenCreateModal: () => void;
-  selectedDate: Date | null;
-  refreshEvents: () => void;
-};
-
-type Event = {
-  id: string;
-  startTime: string;
-  endTime: string;
-  title: string;
-  date?: string;
-};
-
+// Lista de eventos e invitaciones del usuario
 const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventListProps) => {
   const [userEvents, setUserEvents] = useState<Event[]>([]);
   const [pendingInvitations, setPendingInvitations] = useState<InvitationResponse[]>([]);
@@ -27,9 +14,9 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
   const { userInfo } = useUserInfo();
   const navigate = useNavigate();
 
+  // Obtiene eventos e invitaciones del usuario
   const fetchUserEventsAndInvitations = async () => {
     if (!userInfo.token || !userInfo.userId) {
-      console.error("No hay token o userId en localStorage.");
       return;
     }
     try {
@@ -41,10 +28,7 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
         ? invitationsResponse
         : invitationsResponse?.data || [];
       setPendingInvitations(invitations.filter(inv => inv.status === "PENDING"));
-
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -55,10 +39,12 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
     setShowAllEvents(false);
   }, [selectedDate]);
 
+  // Maneja la campana de notificaciones
   const handleBellClick = () => {
     setShowNotificationsDropdown(!showNotificationsDropdown);
   };
 
+  // Acepta o rechaza invitaciones
   const handleInvitationAction = async (invitation: InvitationResponse, newStatus: InvitationStatus) => {
     if (!userInfo.token) return;
     try {
@@ -72,10 +58,7 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
       fetchUserEventsAndInvitations();
       setShowNotificationsDropdown(false);
       refreshEvents();
-    } catch (error) {
-      console.error(`Error ${newStatus === "ACCEPTED" ? "accepting" : "declining"} invitation:`, error);
-      alert(`Failed to ${newStatus === "ACCEPTED" ? "accept" : "decline"} invitation.`);
-    }
+    } catch (error) {}
   };
 
   const sameDayEvents = selectedDate
@@ -86,6 +69,7 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
 
   const filteredEventsToDisplay = selectedDate && !showAllEvents ? sameDayEvents : userEvents;
 
+  // Renderiza los eventos
   const renderEvents = () => {
     if (selectedDate && sameDayEvents.length === 0 && !showAllEvents) {
       return (
@@ -103,11 +87,9 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
     if (filteredEventsToDisplay.length === 0) {
         return <p className="no-events-text">No events to display.</p>;
     }
-
     return filteredEventsToDisplay.map((event) => {
       const formattedDate = event.startTime ? format(new Date(event.startTime), 'MMM d, yyyy') : 'N/A';
       const formattedTime = event.startTime ? format(new Date(event.startTime), 'HH:mm') : 'N/A';
-
       return (
         <div className="event-item" key={event.id}>
           <div className="event-item-date">
@@ -120,6 +102,20 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
     });
   };
 
+  // Agrupa invitaciones por título de evento
+  const groupedInvitations = React.useMemo(() => {
+    const map = new Map<string, InvitationResponse[]>();
+    pendingInvitations.forEach(inv => {
+      const key = inv.eventTitle || `Event ID ${inv.eventId}`;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(inv);
+    });
+    return Array.from(map.entries());
+  }, [pendingInvitations]);
+
+  // Cantidad de invitaciones únicas por título
+  const uniqueInvitationsCount = groupedInvitations.length;
+
   return (
     <div className="events-section">
       <div className="events-header">
@@ -127,28 +123,31 @@ const EventList = ({ onOpenCreateModal, selectedDate, refreshEvents }: EventList
         <div className="notification-bell-container">
           <div className="notification-bell" onClick={handleBellClick} style={{ cursor: 'pointer' }}>
             <i className="bx bxs-bell"></i>
-            {pendingInvitations.length > 0 && <span>{pendingInvitations.length}</span>}
+            {uniqueInvitationsCount > 0 && <span>{uniqueInvitationsCount}</span>}
           </div>
           {showNotificationsDropdown && (
             <div className="notifications-dropdown">
               {pendingInvitations.length === 0 ? (
                 <p className="no-notifications">No pending invitations.</p>
               ) : (
-                pendingInvitations.map(inv => (
-                  <div key={inv.id} className="notification-item">
-                    <p>
-                      {inv.invitingUserName || `User ID ${inv.invitingUserId || 'Unknown'}`} invited you to "{inv.eventTitle || `Event ID ${inv.eventId}`}"
-                    </p>
-                    <div className="notification-actions">
-                      <button onClick={() => handleInvitationAction(inv, "ACCEPTED")} className="accept-button">
-                        Accept
-                      </button>
-                      <button onClick={() => handleInvitationAction(inv, "DECLINED")} className="decline-button">
-                        Decline
-                      </button>
+                groupedInvitations.map(([title, invitations]) => {
+                  const inv = invitations[0];
+                  return (
+                    <div key={inv.id} className="notification-item">
+                      <p>
+                        {inv.invitingUserName || `User ID ${inv.invitingUserId || 'Unknown'}`} invited you to "{title}"
+                      </p>
+                      <div className="notification-actions">
+                        <button onClick={() => handleInvitationAction(inv, "ACCEPTED")} className="accept-button">
+                          Accept
+                        </button>
+                        <button onClick={() => handleInvitationAction(inv, "DECLINED")} className="decline-button">
+                          Decline
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           )}

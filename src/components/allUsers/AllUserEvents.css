@@ -74,91 +74,191 @@ body {
 
 .users-events-cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 25px;
+  grid-template-columns: repeat(3, 1fr); /* Cambiado a 3 columnas */
+  gap: 28px;
   width: 100%;
   padding: 0 10px;
   box-sizing: border-box;
+  margin-bottom: 30px;
 }
 
 .users-events-user-card {
-  background-color: #f0f0f0;
-  border-radius: 12px;
-  padding: 25px 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #fffde0 60%, #f0e6d2 100%);
+  border-radius: 16px;
+  padding: 28px 18px 22px 18px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08), 0 1.5px 3px rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-}
-.edit-user-icon{
-      margin-inline: 8px;
-    padding: 10px;
-    border-radius: 50%;
-    background-color: red;
+  transition: transform 0.18s, box-shadow 0.18s;
+  border: 1.5px solid #f5e7b7;
 }
 
+.users-events-user-card:hover {
+  transform: translateY(-4px) scale(1.025);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.07);
+  border-color: #ffe082;
+}
 
 .users-events-username-label {
-  background-color: #d3b8ae;
-  color: white;
-  padding: 8px 25px;
-  border-radius: 20px;
-  margin-bottom: 20px;
-  font-weight: 500;
-  font-size: 0.95em;
-  display: inline-block;
-  min-width: 120px;
+  background: linear-gradient(90deg, #d3b8ae 60%, #f5cda7 100%);
+  color: #fff;
+  padding: 10px 28px;
+  border-radius: 22px;
+  margin-bottom: 18px;
+  font-weight: 600;
+  font-size: 1.05em;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
 }
 
 .users-events-view-events-button {
-  background-color: #fffde0;
+  background: linear-gradient(90deg, #fffde0 60%, #ffe082 100%);
   color: #424242;
   border: none;
-  padding: 10px 30px;
-  border-radius: 20px;
+  padding: 11px 34px;
+  border-radius: 22px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 0.9em;
-  transition: background-color 0.2s ease;
+  font-size: 1em;
+  margin-bottom: 12px;
+  margin-top: 2px;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.13s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .users-events-view-events-button:hover {
-  background-color: #fff9c4;
+  background: linear-gradient(90deg, #fff9c4 60%, #ffe082 100%);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.13);
+  transform: translateY(-2px) scale(1.03);
 }
 
-
 .user-actions-icon-button {
-  background: none;
+  background: #f5e7b7;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   margin-left: 8px;
   margin-top: 0.5rem;
   margin-bottom: -0.2rem;
+  border-radius: 50%;
+  padding: 7px 10px;
+  transition: background 0.18s;
+}
+
+.user-actions-icon-button:hover {
+  background: #ffe082;
 }
 
 .user-actions-dropdown {
   flex-direction: column;
-  gap: 4px;
-  margin-top: 6px;
+  gap: 6px;
+  margin-top: 8px;
+  background: #fffde0;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 10px 14px;
+  position: absolute;
+  z-index: 10;
+  min-width: 170px;
+  right: 0;
 }
 
-.edit, .delete {
-  background-color: #f0f0f0;
+.user-actions-dropdown-btn.edit {
+  background-color: #f5cda7;
+  color: #333;
   border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px;
+  margin-bottom: 4px;
+  transition: background 0.18s;
 }
 
-.edit-btn:hover {
-  background-color: #cce5ff;
+.user-actions-dropdown-btn.edit:hover {
+  background-color: #ffe082;
 }
 
-.delete-btn:hover {
-  background-color: #ffcccc;
+.user-actions-dropdown-btn.delete {
+  background-color: #f8d7da;
+  color: #b71c1c;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  margin-bottom: 4px;
+  transition: background 0.18s;
+}
+
+.user-actions-dropdown-btn.delete:hover {
+  background-color: #ffbdbd;
+}
+
+.user-actions-dropdown-item.toggle-admin-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 15px;
+  color: #7c5c3b;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider.round {
+  border-radius: 20px;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ffe082;
+  transition: .3s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+}
+
+input:checked + .slider {
+  background-color: #f5cda7;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+@media (max-width: 900px) {
+  .users-events-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -169,11 +269,11 @@ body {
     max-width: 100%;
   }
   .users-events-cards-grid {
-    grid-template-columns: 1fr; 
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
   .users-events-user-card {
-    padding: 20px 15px;
+    padding: 18px 10px;
   }
 }
 .back-button {
@@ -193,4 +293,41 @@ body {
 .back-button:hover {
   background-color: #FFD34E;
   transform: translateY(-2px);
+}
+
+
+.users-events-page-container {
+  padding-top: 7px;
+  position: relative; 
+}
+
+.fixed-logout-button {
+  position: fixed; 
+  top: 20px;       
+  right: 20px;      
+  z-index: 1000;    
+  padding: 10px 20px; 
+  background-color: #dc3545; 
+  color: white;
+  border: none;
+  border-radius: 5px; 
+  cursor: pointer;
+  font-size: 0.95em; 
+  font-weight: bold;
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out; 
+}
+
+.fixed-logout-button:hover {
+  background-color: #c82333; 
+  transform: translateY(-1px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); 
+}
+
+.fixed-logout-button:active {
+  background-color: #bd2130; 
+  transform: translateY(0px); 
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
 }

@@ -1,19 +1,14 @@
-// src/components/AllUserEvents/AllUserEvents.tsx
-import React, { useEffect, useState, useCallback, useRef } from 'react'; // Added useRef
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import './AllUserEvents.css';
 import { useUserInfo } from '../../types/UserInfo';
 import EventsService from '../../service/event.service';
 import { useNavigate } from 'react-router-dom';
 import ProfileModal from '../profile/profile';
 
-// Update UserResponseDto if your backend now sends role information
 type UserResponseDto = {
   id: string;
   username: string;
-  // Example: Add roles if your backend provides them
-  roles?: Array<{ name: string }>; // e.g., [{name: "USER"}, {name: "ADMIN"}]
-  // Or a simpler isAdmin boolean if preferred and backend supports it
-  // isAdmin?: boolean;
+  roles?: Array<{ name: string }>;
 };
 
 const AllUsersEvents = () => {
@@ -23,7 +18,7 @@ const AllUsersEvents = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedUserIdForModal, setSelectedUserIdForModal] = useState<string | null>(null);
   const [dropdownOpenUserId, setDropdownOpenUserId] = useState<string | null>(null);
-  const dropdownRef = useRef<HTMLDivElement | null>(null); // For click outside
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const navigate = useNavigate();
 
@@ -37,7 +32,6 @@ const AllUsersEvents = () => {
     try {
       setLoading(true);
       const fetchedUsersResponse = await EventsService.aGetUsers(userInfo.token);
-      // Ensure the response is correctly parsed, especially if it might be nested under 'data'
       const usersList = Array.isArray(fetchedUsersResponse?.data)
         ? fetchedUsersResponse.data
         : Array.isArray(fetchedUsersResponse)
@@ -47,7 +41,6 @@ const AllUsersEvents = () => {
       setError(null);
     } catch (err) {
       setError("Failed to fetch users.");
-      console.error("Error fetching users:", err);
       setUsers([]);
     } finally {
       setLoading(false);
@@ -58,7 +51,6 @@ const AllUsersEvents = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  // Effect to handle clicks outside the dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -77,7 +69,6 @@ const AllUsersEvents = () => {
     };
   }, [dropdownOpenUserId]);
 
-
   const handleViewEventsClick = (userId: string) => {
     navigate(`/events/${userId}`);
   };
@@ -94,9 +85,8 @@ const AllUsersEvents = () => {
       await EventsService.aDeleteUser(userInfo.token, userIdToDelete);
       setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userIdToDelete));
       alert(`User "${username}" deleted successfully.`);
-      setDropdownOpenUserId(null); // Close dropdown after action
+      setDropdownOpenUserId(null);
     } catch (err) {
-      console.error("Error deleting user:", err);
       alert(`Failed to delete user "${username}".`);
     }
   };
@@ -107,24 +97,16 @@ const AllUsersEvents = () => {
       return;
     }
     try {
-      // Assuming you have this service method:
       const updatedUser = await EventsService.toggleUserAdminStatus(userInfo.token, userIdToToggle);
-      // Update the user in the local state or refetch
       setUsers(prevUsers =>
         prevUsers.map(u => (u.id === userIdToToggle ? { ...u, roles: updatedUser.roles } : u))
       );
-      // Or better, if the backend returns the full updated user:
-      // setUsers(prevUsers => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
-      // Or simply refetch all users:
-      // await fetchUsers();
       alert(`Admin status for user ID ${userIdToToggle} toggled.`);
-      setDropdownOpenUserId(null); // Close dropdown after action
+      setDropdownOpenUserId(null);
     } catch (err) {
-      console.error("Error toggling admin status:", err);
       alert(`Failed to toggle admin status for user ID ${userIdToToggle}.`);
     }
   };
-
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -135,9 +117,7 @@ const AllUsersEvents = () => {
 
   const isUserAdmin = (user: UserResponseDto): boolean => {
     return !!user.roles?.some(role => role.name === 'ADMIN');
-    // Or if you use isAdmin boolean: return !!user.isAdmin;
   };
-
 
   if (loading) {
     return <div className="users-events-page-container"><p>Loading users...</p></div>;
@@ -149,18 +129,18 @@ const AllUsersEvents = () => {
 
   return (
     <div className="users-events-page-container">
-      <button className="settings-logout-btn" onClick={handleLogout}>
-        Logout
-      </button>
-
+ <button
+      className="fixed-logout-button" 
+      onClick={handleLogout}
+    >
+      Logout
+    </button>
       <div className="users-events-title-banner">
         <h1 className="users-events-title-text">ALL USERS/EVENTS</h1>
       </div>
-
       {users.length === 0 && !loading && (
         <p style={{ textAlign: 'center', marginTop: '20px' }}>No users found.</p>
       )}
-
       <div className="users-events-cards-grid">
         {users.map((user) => (
           <div className="users-events-user-card" key={user.id}>
@@ -171,12 +151,11 @@ const AllUsersEvents = () => {
             >
               View Events
             </button>
-
-            <div className="user-actions-container"> {/* Container for positioning */}
+            <div className="user-actions-container">
               <button
                 className="user-actions-icon-button"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent click from bubbling to document listener immediately
+                  e.stopPropagation();
                   setDropdownOpenUserId(prevId => prevId === user.id ? null : user.id);
                 }}
                 aria-haspopup="true"
@@ -185,13 +164,12 @@ const AllUsersEvents = () => {
               >
                 ⚙️
               </button>
-
               {dropdownOpenUserId === user.id && (
                 <div className="user-actions-dropdown" ref={dropdownRef}>
                   <button
                     onClick={() => {
                       setSelectedUserIdForModal(user.id);
-                      setDropdownOpenUserId(null); // Close dropdown when opening modal
+                      setDropdownOpenUserId(null);
                     }}
                     className="user-actions-dropdown-btn edit"
                     title="Edit User Profile"
@@ -222,7 +200,6 @@ const AllUsersEvents = () => {
           </div>
         ))}
       </div>
-
       {selectedUserIdForModal && (
         <ProfileModal
           isOpen={!!selectedUserIdForModal}
