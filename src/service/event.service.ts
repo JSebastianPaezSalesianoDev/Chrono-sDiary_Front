@@ -18,13 +18,13 @@ const aAuthLogin = async (username: string, password: string) => {
     return response.data;
 };
 
-const aResetPassword = async ( email: string) => {
+const aResetPassword = async (email: string) => {
     const response = await axios.post(
         `${API_URL}users/reset-password`,
         { email: email },
         {
             headers: {
-               
+
                 "Content-Type": "application/json",
             },
         }
@@ -189,6 +189,23 @@ const aDeleteUser = async (token: string, userId: string) => {
     }
 };
 
+const toggleUserAdminStatus = async (token: string, userId: string) => {
+    try {
+        const response = await axios.put(
+            `${API_URL}users/${userId}/toggle-admin`,
+            null, 
+            {   
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error toggling admin status (axios call):", error);
+        throw error;
+    }
+};
 const EventsService = {
     aAuthLogin,
     aGetEventsById,
@@ -203,7 +220,8 @@ const EventsService = {
     aUpdateUser,
     aGetUserById,
     aResetPassword,
-    aDeleteUser
+    aDeleteUser,
+    toggleUserAdminStatus
 };
 
 export default EventsService;
